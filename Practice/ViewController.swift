@@ -190,20 +190,21 @@ class LinkList<T: Equatable> {
     
     
     func addTwoNumbers(l1: Node<Int>?, l2: Node<Int>?) -> Node<Int> {
-        //reference pointer for l3 which will save the addition of two linklists
-        let dummyNode = Node<Int>(data: 0)
         
-        //this node will hold curent addition node of l3
-        var current = dummyNode
-        var carry = 0, l1 = l1, l2 = l2
+        //This dummy node will hold reference for resultinh linklist l3
+        let dummyNode = Node<Int>()
+        
+        //This node will hold addition of two nodes of l1 & l2
+        var currentNode = dummyNode
+        
+        var carry = 0 , l1 = l1, l2 = l2
         
         while l1 != nil && l2 != nil {
             let digit = (l1!.data! + l2!.data! + carry) % 10
             carry = (l1!.data! + l2!.data! + carry) / 10
-            
             let newNode = Node<Int>(data: digit)
-            current.next = newNode
-            current = newNode
+            currentNode.next = newNode
+            currentNode = newNode // make a reference to new node
             l1 = l1?.next
             l2 = l2?.next
         }
@@ -211,28 +212,22 @@ class LinkList<T: Equatable> {
         while l1 != nil {
             let digit = (l1!.data! + carry) % 10
             carry = (l1!.data! + carry) / 10
-            
             let newNode = Node<Int>(data: digit)
-            current.next = newNode
-            current = newNode
+            currentNode.next = newNode
+            currentNode = newNode // make a reference to new node
             l1 = l1?.next
         }
+        
         
         while l2 != nil {
             let digit = (l2!.data! + carry) % 10
             carry = (l2!.data! + carry) / 10
-            
             let newNode = Node<Int>(data: digit)
-            current.next = newNode
-            current = newNode
-            l2 = l2?.next
+            currentNode.next = newNode
+            currentNode = newNode // make a reference to new node
+            l1 = l2?.next
         }
         
-        if carry != 0 {
-            let newNode = Node<Int>(data: carry)
-            current.next = newNode
-            current = newNode
-        }
         return dummyNode.next!
     }
     
