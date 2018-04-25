@@ -190,48 +190,32 @@ class LinkList<T: Equatable> {
     
     
     func addTwoNumbers(l1: Node<Int>?, l2: Node<Int>?) -> Node<Int> {
-        
-        //This dummy node will hold reference for resultinh linklist l3
-        let dummyNode = Node<Int>()
-        
-        //This node will hold addition of two nodes of l1 & l2
+        let dummyNode = Node<Int>(data: 0)
         var currentNode = dummyNode
+        var carry = 0, sum = 0, l1 = l1, l2 = l2
         
-        var carry = 0 , l1 = l1, l2 = l2
-        
-        while l1 != nil && l2 != nil {
-            let digit = (l1!.data! + l2!.data! + carry) % 10
-            carry = (l1!.data! + l2!.data! + carry) / 10
-            let newNode = Node<Int>(data: digit)
-            currentNode.next = newNode
-            currentNode = newNode // make a reference to new node
-            l1 = l1?.next
-            l2 = l2?.next
+        while l1 != nil || l2 != nil || carry != 0 {
+            sum = carry
+            
+            if l1 != nil {
+                sum += l1!.data!
+                l1 = l1?.next
+            }
+            
+            if l2 != nil {
+                sum += l2!.data!
+                l2 = l2?.next
+            }
+            
+            let digit = sum % 10
+            carry = sum / 10
+            
+            let node = Node<Int>(data: digit)
+            currentNode.next = node
+            currentNode = node
         }
-        
-        while l1 != nil {
-            let digit = (l1!.data! + carry) % 10
-            carry = (l1!.data! + carry) / 10
-            let newNode = Node<Int>(data: digit)
-            currentNode.next = newNode
-            currentNode = newNode // make a reference to new node
-            l1 = l1?.next
-        }
-        
-        
-        while l2 != nil {
-            let digit = (l2!.data! + carry) % 10
-            carry = (l2!.data! + carry) / 10
-            let newNode = Node<Int>(data: digit)
-            currentNode.next = newNode
-            currentNode = newNode // make a reference to new node
-            l1 = l2?.next
-        }
-        
         return dummyNode.next!
     }
-    
-
     
     func showList() {
         var curentNode: Node! = head
@@ -356,7 +340,7 @@ func removeSpaces(string: String) -> String {
 }
 
 func reverseEveryOtherWord(sentence: String) -> String {
-   //first get all words fro ma string
+    //first get all words fro ma string
     let allWords = sentence.components(separatedBy: " ")
     var newSentence = ""
     
@@ -377,13 +361,13 @@ func reverseEveryOtherWord(sentence: String) -> String {
 }
 //5x3  = 3x5
 func convertRowsToColumns(array: [[Int]]) {
-   var newArray = [[Int]]()
+    var newArray = [[Int]]()
     
     for x in 0..<array.first!.count {
         var temp = [Int]()
         for y in 0..<array.count {   // (0,0), (1,0), (2,0)
-                                     // (0,1), (1,1), (2,1)
-                                     // (0,2), (1,2), (2,2)
+            // (0,1), (1,1), (2,1)
+            // (0,2), (1,2), (2,2)
             temp.append(array[y][x])
         }
         newArray.append(temp)
@@ -391,12 +375,12 @@ func convertRowsToColumns(array: [[Int]]) {
     print(newArray)
 }
 
-//Mark: 2Sum Brute force appraoch - O(n2)
+//Mark: 2Sum brute force appraoch - O(n2)
 func twoSum(array: [Int], target: Int) -> [(Int, Int)] {
     var pairs = [(Int, Int)]()
     for i in 0..<array.count {
         for j in i+1..<array.count {
-            if array[j] == target - array[i] {
+            if array[j] == (target - array[i]) {
                 pairs.append((i, j))
             }
         }
@@ -404,11 +388,11 @@ func twoSum(array: [Int], target: Int) -> [(Int, Int)] {
     return pairs
 }
 
-//Mark: 2Sum Optimized appraoch - O(n)
+//Mark: 2Sum optimized approach - O(n)
 func twoSum(list: [Int], target: Int) -> [(Int, Int)] {
     var dict = [Int : Int] ()
     var pair = [(Int, Int)] ()
-
+    
     //traverse through the list and check if target-number value exist in hash
     for (index, number) in list.enumerated() {
         if let targetIndex = dict[target-number] {
@@ -420,6 +404,34 @@ func twoSum(list: [Int], target: Int) -> [(Int, Int)] {
 }
 
 
+func findLongestSubstring(from s : String) -> (Int, String) {
+    var i = 0, j = 0, maxLength = 0, n = s.count
+    let array = Array(s)
+    var dict = [Character : Int]()
+    var breakPoint = 0
+    
+    while j < n {
+        let c = array[j]
+        
+        if let _ = dict[c] {
+            j = i
+            i += 1
+            dict.removeAll()
+        } else {
+            dict[c] = j
+            j += 1
+        }
+    
+        let currentLength = dict.keys.count
+        if maxLength < currentLength {
+            maxLength = currentLength
+            breakPoint = j
+        }
+    }
+    let nonRepeatedString = array[(breakPoint-maxLength)..<breakPoint]
+    return (maxLength, String(nonRepeatedString))
+}
+
 
 class ViewController: UIViewController {
     
@@ -427,33 +439,31 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         let node1  = Node<Int>()
-        node1.data = 1
+        node1.data = 5
         
-        let node2  = Node<Int>()
-        node2.data = 2
-        
-        let node3  = Node<Int>()
-        node3.data = 3
+        //let node2  = Node<Int>()
+        //node2.data = 2
+        //let node3  = Node<Int>()
+        //node3.data = 3
         
         let list1 = LinkList<Int>()
         list1.insertAtEnd(node: node1)
-        list1.insertAtEnd(node: node2)
-        list1.insertAtEnd(node: node3)
+        //list1.insertAtEnd(node: node2)
+        //list1.insertAtEnd(node: node3)
         list1.showList()
         
         let node4  = Node<Int>()
-        node4.data = 4
+        node4.data = 5
         
-        let node5  = Node<Int>()
-        node5.data = 5
-        
-        let node6  = Node<Int>()
-        node6.data = 6
+        //let node5  = Node<Int>()
+        //node5.data = 5
+        //let node6  = Node<Int>()
+        //node6.data = 6
         
         let list2 = LinkList<Int>()
         list2.insertAtEnd(node: node4)
-        list2.insertAtEnd(node: node5)
-        list2.insertAtEnd(node: node6)
+        //list2.insertAtEnd(node: node5)
+        //list2.insertAtEnd(node: node6)
         list2.showList()
         
         let node = list1.addTwoNumbers(l1: list1.head, l2: list2.head)
@@ -464,7 +474,6 @@ class ViewController: UIViewController {
         //list.reverse()
         //list.reverseRecursive(p: list.head)
         //list.showList()
-        
         //let arr1 = [1,4,6,8]
         //let arr2 = [9,3,5,7]
         
@@ -476,12 +485,14 @@ class ViewController: UIViewController {
         //5 rows 3 columns
         //[ [13,9,5], [4,6,12], [8,3,17], [14,7,9], [1,21,3] ]
         
-       //let arr = shuffle(array:  [1,2,3,4,5])
-       //print(arr)
-        
+        //let arr = shuffle(array:  [1,2,3,4,5])
+        //print(arr)
         //let pairs = [2, 5, 11, 7, 15, 4, 5]
         //let pair = twoSum(list: pairs, target: 9)
         //print(pair)
+        
+        let result = findLongestSubstring(from: "pwwkew")
+        print(result.1, result.0)
     }
 }
 
