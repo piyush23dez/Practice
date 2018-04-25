@@ -405,29 +405,28 @@ func twoSum(list: [Int], target: Int) -> [(Int, Int)] {
 
 
 func findLongestSubstring(from s : String) -> (Int, String) {
-    var i = 0, j = 0, maxLength = 0, n = s.count
+    var j = 0, maxLength = 0, n = s.count, breakPoint = 0
     let array = Array(s)
     var dict = [Character : Int]()
-    var breakPoint = 0
     
     while j < n {
-        let c = array[j]
+        let char = array[j]
         
-        if let _ = dict[c] {
-            j = i
-            i += 1
+        if let index = dict[char] {
+            j = index + 1
             dict.removeAll()
         } else {
-            dict[c] = j
+            dict[char] = j
             j += 1
-        }
-    
-        let currentLength = dict.keys.count
-        if maxLength < currentLength {
-            maxLength = currentLength
-            breakPoint = j
+            
+            let currentLength = dict.keys.count
+            if maxLength < currentLength {
+                maxLength = currentLength
+                breakPoint = j
+            }
         }
     }
+    
     let nonRepeatedString = array[(breakPoint-maxLength)..<breakPoint]
     return (maxLength, String(nonRepeatedString))
 }
