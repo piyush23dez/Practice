@@ -436,19 +436,17 @@ func longestPalinfromicSubstring(s: String) -> String {
     if s.isEmpty || s.count < 2 {
         return s
     }
-    let length = s.count
-    
     let stringArray = Array(s)
-    var palindromeArray: [[Bool]] = Array(repeating: Array.init(repeating: false, count: length), count: length)
+    let length = s.count
+
+    var palindromeArray = Array(repeating: Array.init(repeating: false, count: length), count: length)
     var left = 0, right = 0
     
     for j in 1..<length {
         for i in 0..<j {
-            let isPalindrome = palindromeArray[i+1][j-1] || (j - i) <= 2
-            print(j-i)
-            print(stringArray[i],stringArray[j])
-
-            if stringArray[i] == stringArray[j] && isPalindrome {
+            let isInnerPalindrome = palindromeArray[i+1][j-1] || (j - i) <= 2
+            //print(stringArray[i],stringArray[j])
+            if stringArray[i] == stringArray[j] && isInnerPalindrome {
                 palindromeArray[i][j] = true
                 if (j - i) > (right - left) {
                     left = i
@@ -462,6 +460,48 @@ func longestPalinfromicSubstring(s: String) -> String {
 }
 
 
+func fizzBuzz(of number: Int) -> [String] {
+    var result = [String]()
+    
+    if number < 0 {
+        return result
+    }
+    
+    for i in 0...number {
+        if i%3 == 0 && i%5 == 0 {
+            result.append("FizzBuzz")
+        } else if i%3 == 0 {
+            result.append("Fizz")
+        } else if i%5 == 0 {
+            result.append("Buzz")
+        } else {
+            result.append("\(i)")
+        }
+    }
+    return result
+}
+
+class TreeNode {
+    var value: Int
+    var left: TreeNode?
+    var right: TreeNode?
+    
+    init(val: Int) {
+        self.value = val
+        left = nil
+        right = nil
+    }
+}
+
+
+class MaxDepthOfBimaryTree {
+    func maxDepth(_ root: TreeNode?) -> Int {
+        guard let root = root else {
+            return 0
+        }
+        return max(maxDepth(root.left), maxDepth(root.right)) + 1
+    }
+}
 
 class ViewController: UIViewController {
     
@@ -520,14 +560,22 @@ class ViewController: UIViewController {
         //let pairs = [2, 5, 11, 7, 15, 4, 5]
         //let pair = twoSum(list: pairs, target: 9)
         //print(pair)
-        let arr = merge(array1: [9,4,5], array2: [3,2,8])
-        print(arr)
-        let result = findLongestSubstring(from: "pwwkew")
-        print(result.1, result.0)
+//        let arr = merge(array1: [9,4,5], array2: [3,2,8])
+//        print(arr)
+//        let result = findLongestSubstring(from: "aababca")
+//        print(result.1, result.0)
+//
+//        let lps = longestPalinfromicSubstring(s: "cbbd")
+//        print(lps)
         
-        let lps = longestPalinfromicSubstring(s: "cbbd")
-        print(lps)
+        let root = TreeNode(val: 1)
+        root.left = TreeNode(val: 2)
+        root.right = TreeNode(val: 3)
+        root.left?.left = TreeNode(val: 4)
+        root.right?.right = TreeNode(val: 5)
+        //print(MaxDepthOfBimaryTree().maxDepth(root))
     }
+    
 }
 
 
