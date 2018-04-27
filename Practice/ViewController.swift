@@ -503,6 +503,22 @@ class MaxDepthOfBimaryTree {
     }
 }
 
+func moveZeros(_ nums: inout [Int]) {
+    var index = 0
+    for num in nums {
+        if num != 0 {
+            nums[index] = num
+            index += 1
+            print(nums)
+        }
+    }
+    
+    while index < nums.count {
+        nums[index] = 0
+        index += 1
+    }
+}
+
 class ViewController: UIViewController {
     
     override func viewDidLoad() {
@@ -568,12 +584,15 @@ class ViewController: UIViewController {
 //        let lps = longestPalinfromicSubstring(s: "cbbd")
 //        print(lps)
         
-        let root = TreeNode(val: 1)
-        root.left = TreeNode(val: 2)
-        root.right = TreeNode(val: 3)
-        root.left?.left = TreeNode(val: 4)
-        root.right?.right = TreeNode(val: 5)
+//        let root = TreeNode(val: 1)
+//        root.left = TreeNode(val: 2)
+//        root.right = TreeNode(val: 3)
+//        root.left?.left = TreeNode(val: 4)
+//        root.right?.right = TreeNode(val: 5)
         //print(MaxDepthOfBimaryTree().maxDepth(root))
+        var arr = [0, 1, 0, 3, 12]
+        moveZeros(&arr)
+        print(arr)
     }
     
 }
