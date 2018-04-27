@@ -228,6 +228,7 @@ class LinkList<T: Equatable> {
     
 }
 
+//merge two array without sorting
 func merge(array1: [Int], array2: [Int]) -> [Int] {
     let count1 = array1.count
     let count2 =  array2.count
@@ -431,6 +432,36 @@ func findLongestSubstring(from s : String) -> (Int, String) {
     return (maxLength, String(nonRepeatedString))
 }
 
+func longestPalinfromicSubstring(s: String) -> String {
+    if s.isEmpty || s.count < 2 {
+        return s
+    }
+    let length = s.count
+    
+    let stringArray = Array(s)
+    var palindromeArray: [[Bool]] = Array(repeating: Array.init(repeating: false, count: length), count: length)
+    var left = 0, right = 0
+    
+    for j in 1..<length {
+        for i in 0..<j {
+            let isPalindrome = palindromeArray[i+1][j-1] || (j - i) <= 2
+            print(j-i)
+            print(stringArray[i],stringArray[j])
+
+            if stringArray[i] == stringArray[j] && isPalindrome {
+                palindromeArray[i][j] = true
+                if (j - i) > (right - left) {
+                    left = i
+                    right = j
+                }
+            }
+        }
+    }
+    let stringVal = String(Array(s)[left...right])
+    return stringVal
+}
+
+
 
 class ViewController: UIViewController {
     
@@ -489,9 +520,13 @@ class ViewController: UIViewController {
         //let pairs = [2, 5, 11, 7, 15, 4, 5]
         //let pair = twoSum(list: pairs, target: 9)
         //print(pair)
-        
+        let arr = merge(array1: [9,4,5], array2: [3,2,8])
+        print(arr)
         let result = findLongestSubstring(from: "pwwkew")
         print(result.1, result.0)
+        
+        let lps = longestPalinfromicSubstring(s: "cbbd")
+        print(lps)
     }
 }
 
