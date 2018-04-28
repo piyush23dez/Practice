@@ -519,6 +519,47 @@ func moveZeros(_ nums: inout [Int]) {
     }
 }
 
+/*  Given an array of stock prices, find the maximum profit that can be earned by doing a single transaction
+    of buy and sell in the given period of time. buying day <= selling day */
+
+func buySellStocksI(prices: [Int]) -> (Int, (Int, Int)) {
+    var profit = 0, minPrice = prices.first ?? Int.max
+    var days: (buyDay: Int, sellDay: Int) = (0, 0)
+    
+    for price in prices {
+        if price < minPrice {
+            minPrice = price
+        } else {
+            if (price - minPrice) > profit {
+                days = (prices.index(of: minPrice)!, prices.index(of: price)!)
+            }
+            profit = max(price - minPrice, profit)
+        }
+    }
+    return (profit, days)
+}
+/*  Given an array of stock prices, find the maximum profit that can be earned by performing multiple non-overlapping transactions (buy and sell).
+    Note that you cannot buy on day 1, buy on day 2 and sell them later, as you are
+    engaging multiple transactions at the same time. You must sell before buying again. */
+
+
+func buySellStocksII(prices: [Int]) ->  (Int, [(Int, Int)]) {
+    var profit = 0
+    var days: [(buyDay: Int, sellDay: Int)] = [(0, 0)]
+
+    guard prices.count > 1 else {
+        return (profit, days)
+    }
+    
+    days.removeFirst()
+    for i in 1..<prices.count where prices[i] > prices[i-1] {
+        days.append((i-1, i))
+        profit += prices[i] - prices[i-1]
+    }
+    return (profit, days)
+}
+
+
 class ViewController: UIViewController {
     
     override func viewDidLoad() {
@@ -589,10 +630,18 @@ class ViewController: UIViewController {
 //        root.right = TreeNode(val: 3)
 //        root.left?.left = TreeNode(val: 4)
 //        root.right?.right = TreeNode(val: 5)
-        //print(MaxDepthOfBimaryTree().maxDepth(root))
-        var arr = [0, 1, 0, 3, 12]
-        moveZeros(&arr)
-        print(arr)
+          //print(MaxDepthOfBimaryTree().maxDepth(root))
+//        var arr = [0, 1, 0, 3, 12]
+//        moveZeros(&arr)
+//        print(arr)/////////////////////////////////////'''''''''''''''''''''
+        
+        let stockPrices = [7,1,5,3,6,4]
+        let stockDetails = buySellStocksII(prices: stockPrices)
+        print(stockDetails.0, stockDetails.1)
+        
+        //let stockDetails = buySellStocksII(prices: stockPrices)
+
+        //print("Buying stocks at day: \(stockDetails.1.0) and selling at day: \(stockDetails.1.1), you will get profit of: \(stockDetails.0)")
     }
     
 }
