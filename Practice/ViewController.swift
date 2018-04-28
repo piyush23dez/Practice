@@ -548,7 +548,7 @@ func buySellStocksII(prices: [Int]) ->  (Int, [(Int, Int)]) {
     var days: [(buyDay: Int, sellDay: Int)] = [(0, 0)]
 
     guard prices.count > 1 else {
-        return (profit, days)
+        return (profit, [])
     }
     
     days.removeFirst()
