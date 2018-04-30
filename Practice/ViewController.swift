@@ -614,7 +614,7 @@ func majorityElementII(in nums: [Int]) -> Int {
     return major!
 }
 
-func majorityElementIII(in nums: [Int]) -> Int {
+func majorityElementIII(in nums: [Int]) {
     var dict = [Int: Int]()
     
     for num in nums {
@@ -632,8 +632,6 @@ func majorityElementIII(in nums: [Int]) -> Int {
             print(num)
         }
     }
-    
-    return 0
 }
 
 class ViewController: UIViewController {
