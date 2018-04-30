@@ -538,10 +538,11 @@ func buySellStocksI(prices: [Int]) -> (Int, (Int, Int)) {
     }
     return (profit, days)
 }
+
+
 /*  Given an array of stock prices, find the maximum profit that can be earned by performing multiple non-overlapping transactions (buy and sell).
     Note that you cannot buy on day 1, buy on day 2 and sell them later, as you are
     engaging multiple transactions at the same time. You must sell before buying again. */
-
 
 func buySellStocksII(prices: [Int]) ->  (Int, [(Int, Int)]) {
     var profit = 0
@@ -560,6 +561,81 @@ func buySellStocksII(prices: [Int]) ->  (Int, [(Int, Int)]) {
 }
 
 
+//MARK: Find majority element in an array which has occured more than n/2 times (basic)
+
+func majorityElementI(in arr: [Int]) {
+    let n = arr.count
+    var maxCount = 0, index = 0
+    
+    //itereate throught array from 0...n, 1...n and so on.
+    for i in 0..<n {
+        var count = 0
+        
+        //loop through all the elements and track each element occurance count
+        for j in 0..<n {
+            if arr[i] == arr[j] {
+                count += 1
+            }
+        }
+        
+        //update max count for each element
+        if count > maxCount {
+            maxCount = count
+            index = i
+        }
+    }
+    
+    if maxCount > n/2 {
+        print(arr[index])
+    }
+}
+
+//MARK: Find majority element in an array which has occured more than n/2 times (moore voting algo)
+
+/* This algorithm loops through each element and maintains a count of it. If the next element is same then
+   increment the count, if the next element is not same then decrement the count, and if the count reaches 0 then changes
+   the major to the current element and set the count again to 1. */
+
+func majorityElementII(in nums: [Int]) -> Int {
+    var major = nums.first, count = 0
+    
+    for num in nums {
+        if num == major {
+            count += 1
+        } else {
+            count -= 1
+        }
+        
+        if count == 0 {
+            major = num
+            count = 1
+        }
+    }
+    return major!
+}
+
+func majorityElementIII(in nums: [Int]) -> Int {
+    var dict = [Int: Int]()
+    
+    for num in nums {
+        let isExist = dict.contains { (key, value) -> Bool in
+            key == num
+        }
+        
+        if isExist {
+            dict[num] = dict[num]! + 1
+        } else {
+            dict[num] =  1
+        }
+        
+        if dict[num]! > nums.count/3 {
+            print(num)
+        }
+    }
+    
+    return 0
+}
+
 class ViewController: UIViewController {
     
     override func viewDidLoad() {
@@ -577,7 +653,7 @@ class ViewController: UIViewController {
         list1.insertAtEnd(node: node1)
         //list1.insertAtEnd(node: node2)
         //list1.insertAtEnd(node: node3)
-        list1.showList()
+        //list1.showList()
         
         let node4  = Node<Int>()
         node4.data = 5
@@ -591,12 +667,12 @@ class ViewController: UIViewController {
         list2.insertAtEnd(node: node4)
         //list2.insertAtEnd(node: node5)
         //list2.insertAtEnd(node: node6)
-        list2.showList()
+        //list2.showList()
         
         let node = list1.addTwoNumbers(l1: list1.head, l2: list2.head)
         let list3 = LinkList<Int>()
         list3.head = node
-        list3.showList()
+        //list3.showList()
         
         //list.reverse()
         //list.reverseRecursive(p: list.head)
@@ -638,10 +714,11 @@ class ViewController: UIViewController {
         let stockPrices = [7,1,5,3,6,4]
         let stockDetails = buySellStocksII(prices: stockPrices)
         print(stockDetails.0, stockDetails.1)
-        
         //let stockDetails = buySellStocksII(prices: stockPrices)
-
         //print("Buying stocks at day: \(stockDetails.1.0) and selling at day: \(stockDetails.1.1), you will get profit of: \(stockDetails.0)")
+        
+        let element = majorityElementII(in: [3, 3, 4, 2, 4, 4, 2, 4, 4])
+        print(element)
     }
     
 }
