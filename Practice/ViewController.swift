@@ -669,10 +669,6 @@ func flatten<T>(s: [T]) -> [T] {
     return r
 }
 
-func closure<A>(x: A) -> A {
-    return x
-}
-
 class ViewController: UIViewController {
     
     override func viewDidLoad() {
