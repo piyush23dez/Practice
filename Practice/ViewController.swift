@@ -634,6 +634,45 @@ func majorityElementIII(in nums: [Int]) {
     }
 }
 
+func uniqueCharacter(in s: String) -> Int {
+    var dict = [Character: Bool]()
+    let charArray = Array(s)
+    
+    for char in charArray {
+        if let _ = dict[char] {
+            dict[char] = true
+        } else {
+            dict[char] = false
+        }
+    }
+    
+    for (index, char) in charArray.enumerated() {
+        if let isDup = dict[char], !isDup {
+            return index
+        }
+    }
+    
+    return -1
+    
+}
+
+func flatten<T>(s: [T]) -> [T] {
+   var r = [T]()
+    for e in s {
+        switch e {
+        case let e as [T]:
+            r += flatten(s: e)
+        case let x:
+            r.append(x)
+        }
+    }
+    return r
+}
+
+func closure<A>(x: A) -> A {
+    return x
+}
+
 class ViewController: UIViewController {
     
     override func viewDidLoad() {
@@ -717,11 +756,15 @@ class ViewController: UIViewController {
         
         let element = majorityElementII(in: [3, 3, 4, 2, 4, 4, 2, 4, 4])
         print(element)
-    }
-    
+        
+        let index = uniqueCharacter(in: "geeksforgeeks")
+        print(index)
+
+        let r = flatten(s: [1,2, [3,4, [5,6, [7,8]]]])
+        print(r)
 }
 
-
+}
 
 
 
