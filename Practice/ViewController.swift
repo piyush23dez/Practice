@@ -699,6 +699,24 @@ func inorderTraverse(root: TreeNode?) {
     }
 }
 
+func preorderTraverse(root: TreeNode?) {
+    var current = root, stack = [TreeNode]()
+    stack.append(current!)
+ 
+    while current != nil {
+        let node = stack.removeLast()
+        print(node.value)
+        
+        if current?.right != nil {
+            stack.append(node.right!)
+        }
+        
+        if current?.left != nil {
+            stack.append(node.left!)
+        }
+    }
+}
+
 
 class ViewController: UIViewController {
     
