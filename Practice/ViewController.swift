@@ -438,7 +438,7 @@ func longestPalinfromicSubstring(s: String) -> String {
     }
     let stringArray = Array(s)
     let length = s.count
-
+    
     var palindromeArray = Array(repeating: Array.init(repeating: false, count: length), count: length)
     var left = 0, right = 0
     
@@ -520,7 +520,7 @@ func moveZeros(_ nums: inout [Int]) {
 }
 
 /*  Given an array of stock prices, find the maximum profit that can be earned by doing a single transaction
-    of buy and sell in the given period of time. buying day <= selling day */
+ of buy and sell in the given period of time. buying day <= selling day */
 
 func buySellStocksI(prices: [Int]) -> (Int, (Int, Int)) {
     var profit = 0, minPrice = prices.first ?? Int.max
@@ -541,13 +541,13 @@ func buySellStocksI(prices: [Int]) -> (Int, (Int, Int)) {
 
 
 /*  Given an array of stock prices, find the maximum profit that can be earned by performing multiple non-overlapping transactions (buy and sell).
-    Note that you cannot buy on day 1, buy on day 2 and sell them later, as you are
-    engaging multiple transactions at the same time. You must sell before buying again. */
+ Note that you cannot buy on day 1, buy on day 2 and sell them later, as you are
+ engaging multiple transactions at the same time. You must sell before buying again. */
 
 func buySellStocksII(prices: [Int]) ->  (Int, [(Int, Int)]) {
     var profit = 0
     var days: [(buyDay: Int, sellDay: Int)] = [(0, 0)]
-
+    
     guard prices.count > 1 else {
         return (profit, [])
     }
@@ -593,8 +593,8 @@ func majorityElementI(in arr: [Int]) {
 //MARK: Find majority element in an array which has occured more than n/2 times (moore voting algo)
 
 /* This algorithm loops through each element and maintains a count of it. If the next element is same then
-   increment the count, if the next element is not same then decrement the count, and if the count reaches 0 then changes
-   the major to the current element and set the count again to 1. */
+ increment the count, if the next element is not same then decrement the count, and if the count reaches 0 then changes
+ the major to the current element and set the count again to 1.*/
 
 func majorityElementII(in nums: [Int]) -> Int {
     var major = nums.first, count = 0
@@ -616,7 +616,6 @@ func majorityElementII(in nums: [Int]) -> Int {
 
 func majorityElementIII(in nums: [Int]) {
     var dict = [Int: Int]()
-    
     for num in nums {
         let isExist = dict.contains { (key, value) -> Bool in
             key == num
@@ -657,7 +656,7 @@ func uniqueCharacter(in s: String) -> Int {
 }
 
 func flatten<T>(s: [T]) -> [T] {
-   var r = [T]()
+    var r = [T]()
     for e in s {
         switch e {
         case let e as [T]:
@@ -668,6 +667,38 @@ func flatten<T>(s: [T]) -> [T] {
     }
     return r
 }
+
+func convertArrayToBST(nums: [Int]) -> TreeNode? {
+    if nums.isEmpty {
+        return nil
+    }
+    
+    let mid = nums[nums.count/2]
+    let tree = TreeNode(val: mid)
+    
+    let leftArray = Array(nums[0..<nums.count/2])
+    let rightArray = Array(nums[nums.count/2 + 1..<nums.count])
+    tree.left = convertArrayToBST(nums: leftArray)
+    tree.right = convertArrayToBST(nums: rightArray)
+    return tree
+}
+
+func inorderTraverse(root: TreeNode?) {
+  var current = root, stack = [TreeNode]()
+    
+    while current != nil || !stack.isEmpty {
+        
+        if current != nil {
+            stack.append(current!)
+            current = current?.left
+        } else {
+            let node = stack.removeLast()
+            print(node.value)
+            current = node.right
+        }
+    }
+}
+
 
 class ViewController: UIViewController {
     
@@ -726,23 +757,23 @@ class ViewController: UIViewController {
         //let pairs = [2, 5, 11, 7, 15, 4, 5]
         //let pair = twoSum(list: pairs, target: 9)
         //print(pair)
-//        let arr = merge(array1: [9,4,5], array2: [3,2,8])
-//        print(arr)
-//        let result = findLongestSubstring(from: "aababca")
-//        print(result.1, result.0)
-//
-//        let lps = longestPalinfromicSubstring(s: "cbbd")
-//        print(lps)
+        //        let arr = merge(array1: [9,4,5], array2: [3,2,8])
+        //        print(arr)
+        //        let result = findLongestSubstring(from: "aababca")
+        //        print(result.1, result.0)
+        //
+        //        let lps = longestPalinfromicSubstring(s: "cbbd")
+        //        print(lps)
         
-//        let root = TreeNode(val: 1)
-//        root.left = TreeNode(val: 2)
-//        root.right = TreeNode(val: 3)
-//        root.left?.left = TreeNode(val: 4)
-//        root.right?.right = TreeNode(val: 5)
-          //print(MaxDepthOfBimaryTree().maxDepth(root))
-//        var arr = [0, 1, 0, 3, 12]
-//        moveZeros(&arr)
-//        print(arr)/////////////////////////////////////'''''''''''''''''''''
+        //        let root = TreeNode(val: 1)
+        //        root.left = TreeNode(val: 2)
+        //        root.right = TreeNode(val: 3)
+        //        root.left?.left = TreeNode(val: 4)
+        //        root.right?.right = TreeNode(val: 5)
+        //print(MaxDepthOfBimaryTree().maxDepth(root))
+        //        var arr = [0, 1, 0, 3, 12]
+        //        moveZeros(&arr)
+        //        print(arr)/////////////////////////////////////'''''''''''''''''''''
         
         let stockPrices = [7,1,5,3,6,4]
         let stockDetails = buySellStocksII(prices: stockPrices)
@@ -755,11 +786,15 @@ class ViewController: UIViewController {
         
         let index = uniqueCharacter(in: "geeksforgeeks")
         print(index)
-
+        
         let r = flatten(s: [1,2, [3,4, [5,6, [7,8]]]])
-        print(r)
-}
-
+        let s = flatten(s: ["a","b", ["c","d", ["e","f", ["g","h"]]]])
+        print(r,s)
+        
+        let treeArray = [1,3,5,7,9]
+        let root = convertArrayToBST(nums: treeArray)
+        inorderTraverse(root: root!)
+    }
 }
 
 
