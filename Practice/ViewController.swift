@@ -715,8 +715,8 @@ func preorderTraverse(root: TreeNode?) {
 //MARK: Inorder (left -> root -> right)
 
 func inorderTraverse(root: TreeNode?) {
-  var current = root, stack = [TreeNode]()
-  
+    var current = root, stack = [TreeNode]()
+    
     if current != nil || !stack.isEmpty {
         
         if current != nil {
@@ -738,7 +738,7 @@ func postorderTraverse(root: TreeNode?) {
     
     while !stack.isEmpty {
         
-      let node = stack.last
+        let node = stack.last
         if node!.isLeaf {
             print(node!.value)
         } else {
@@ -757,31 +757,27 @@ func postorderTraverse(root: TreeNode?) {
 
 
 func topKFrequentElements(_ a: [Int], _ k: Int) -> [Int]{
-    var frequencyTable = [Int: Int]()
+    var frequencyTable = [Int : Int]()
     var result = [Int]()
     
-    //create a hash table for tracking occurances
-    for number in a {
-        if frequencyTable[number] != nil{
-            frequencyTable[number]! += 1
-        }else{
-            frequencyTable[number] = 1
+    for num in a {
+        if frequencyTable[num] == nil {
+            frequencyTable[num] = 1
+        } else {
+            frequencyTable[num]! += 1
         }
     }
     
-    var buckets = [[Int]?](repeating: nil, count: frequencyTable.keys.count == a.count ? a.count + 1 : a.count)
-    
-    //frequency table may look like this: table[num1] = 2times, table[num2] = 3times, table[num3] = 1time, table[num4] = 2times, table[num5] = 3times
+    var buckets = [[Int]?](repeating: nil, count: a.count+1)
     
     for (num, times) in frequencyTable {
         if buckets[times] == nil {
             buckets[times] = [Int]()
         }
-        buckets[times]!.append(num)
+        buckets[times]?.append(num)
     }
-    //buckets may look like this: bucket[b[0], b[1], b[2], b[3]] = bucket[[0] [num3], [num1, num4], [num2,num5] ]
-
-    for i in stride(from: buckets.count-1, through: 0, by: -1) where result.count<k {
+    
+    for i in stride(from: buckets.count-1, to: 0, by: -1) where result.count<k {
         if let bucket = buckets[i] {
             result += bucket
             if result.count > k {
@@ -790,6 +786,27 @@ func topKFrequentElements(_ a: [Int], _ k: Int) -> [Int]{
         }
     }
     return result
+}
+
+//MARK: Check if tree is symmteric
+
+func isSymmetric(root: TreeNode?) -> Bool {
+    guard let root = root else {
+        return true
+    }
+    return helper(p: root.left, q: root.right)
+}
+
+func helper(p: TreeNode?, q: TreeNode?) -> Bool {
+    if p == nil && q == nil {
+        return true
+    }
+    
+    if p == nil || q == nil || p?.value != q?.value {
+        return false
+    }
+    
+    return helper(p: p?.left, q: q?.right) && helper(p: p?.right, q: q?.left)
 }
 
 class ViewController: UIViewController {
@@ -887,8 +904,8 @@ class ViewController: UIViewController {
         let root = convertArrayToBST(nums: treeArray)
         inorderTraverse(root: root!)
         
-       let resu = topKFrequentElements([1], 1)
-       print(resu)
+        let resu = topKFrequentElements([1], 1)
+        print(resu)
     }
 }
 
