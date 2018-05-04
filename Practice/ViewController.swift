@@ -491,6 +491,10 @@ class TreeNode {
         left = nil
         right = nil
     }
+    
+    var isLeaf: Bool {
+        return left == nil && right == nil
+    }
 }
 
 
@@ -668,6 +672,8 @@ func flatten<T>(s: [T]) -> [T] {
     return r
 }
 
+//MARK: Tree
+
 func convertArrayToBST(nums: [Int]) -> TreeNode? {
     if nums.isEmpty {
         return nil
@@ -683,40 +689,106 @@ func convertArrayToBST(nums: [Int]) -> TreeNode? {
     return tree
 }
 
+
+//MARK: Preorder (root -> left -> right)
+
+func preorderTraverse(root: TreeNode?) {
+    var current = root, stack = [TreeNode]()
+    stack.append(current!)
+    
+    while current != nil {
+        
+        let node = stack.removeLast()
+        print(node.value)
+        
+        if current?.right != nil {
+            current = current?.right
+        }
+        
+        if current?.left != nil {
+            current = current?.left
+        }
+    }
+}
+
+
+//MARK: Inorder (left -> root -> right)
+
 func inorderTraverse(root: TreeNode?) {
   var current = root, stack = [TreeNode]()
-    
-    while current != nil || !stack.isEmpty {
+  
+    if current != nil || !stack.isEmpty {
         
         if current != nil {
             stack.append(current!)
             current = current?.left
         } else {
-            let node = stack.removeLast()
-            print(node.value)
-            current = node.right
+            let node = stack.popLast()
+            print(node!.value)
+            current = current?.right
         }
     }
 }
 
-func preorderTraverse(root: TreeNode?) {
-    var current = root, stack = [TreeNode]()
-    stack.append(current!)
- 
-    while current != nil {
-        let node = stack.removeLast()
-        print(node.value)
+//MARK: Postorder (left -> right -> root)
+
+func postorderTraverse(root: TreeNode?) {
+    var stack = [TreeNode]()
+    stack.append(root!)
+    
+    while !stack.isEmpty {
         
-        if current?.right != nil {
-            stack.append(node.right!)
-        }
-        
-        if current?.left != nil {
-            stack.append(node.left!)
+      let node = stack.last
+        if node!.isLeaf {
+            print(node!.value)
+        } else {
+            if node?.right != nil {
+                stack.append(node!.right!)
+                node?.right = nil
+            }
+            
+            if node?.left != nil {
+                stack.append(node!.left!)
+                node?.left = nil
+            }
         }
     }
 }
 
+
+func topKFrequentElements(_ a: [Int], _ k: Int) -> [Int]{
+    var frequencyTable = [Int: Int]()
+    var buckets = [[Int]?](repeating: nil, count: a.count)
+    var result = [Int]()
+    
+    //create a hash table for tracking occurances
+    for number in a {
+        if frequencyTable[number] != nil{
+            frequencyTable[number]! += 1
+        }else{
+            frequencyTable[number] = 1
+        }
+    }
+    //frequency table may look like this: table[num1] = 2times, table[num2] = 3times, table[num3] = 1time, table[num4] = 2times, table[num5] = 3times
+    
+    for (num, times) in frequencyTable {
+        if buckets[times] == nil {
+            buckets[times] = [Int]()
+        }
+        buckets[times]!.append(num)
+    }
+    //buckets may look like this: bucket[b[0], b[1], b[2], b[3]] = bucket[[0] [num3], [num1, num4], [num2,num5] ]
+
+    for i in stride(from: buckets.count-1, through: 0, by: -1) where result.count<k {
+        if let bucket = buckets[i] {
+            result += bucket
+            if result.count > k {
+                result = Array(result[0..<k])
+            }
+        }
+    }
+    return result
+}
 
 class ViewController: UIViewController {
     
@@ -812,6 +884,9 @@ class ViewController: UIViewController {
         let treeArray = [1,3,5,7,9]
         let root = convertArrayToBST(nums: treeArray)
         inorderTraverse(root: root!)
+        
+       let resu = topKFrequentElements([1,1,1,2,2,3], 2)
+        print(resu)
     }
 }
 
