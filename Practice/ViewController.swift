@@ -758,7 +758,6 @@ func postorderTraverse(root: TreeNode?) {
 
 func topKFrequentElements(_ a: [Int], _ k: Int) -> [Int]{
     var frequencyTable = [Int: Int]()
-    var buckets = [[Int]?](repeating: nil, count: a.count)
     var result = [Int]()
     
     //create a hash table for tracking occurances
@@ -769,6 +768,9 @@ func topKFrequentElements(_ a: [Int], _ k: Int) -> [Int]{
             frequencyTable[number] = 1
         }
     }
+    
+    var buckets = [[Int]?](repeating: nil, count: frequencyTable.keys.count == a.count ? a.count + 1 : a.count)
+    
     //frequency table may look like this: table[num1] = 2times, table[num2] = 3times, table[num3] = 1time, table[num4] = 2times, table[num5] = 3times
     
     for (num, times) in frequencyTable {
@@ -885,8 +887,8 @@ class ViewController: UIViewController {
         let root = convertArrayToBST(nums: treeArray)
         inorderTraverse(root: root!)
         
-       let resu = topKFrequentElements([1,1,1,2,2,3], 2)
-        print(resu)
+       let resu = topKFrequentElements([1], 1)
+       print(resu)
     }
 }
 
