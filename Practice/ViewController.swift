@@ -788,16 +788,30 @@ func topKFrequentElements(_ a: [Int], _ k: Int) -> [Int]{
     return result
 }
 
-//MARK: Check if tree is symmteric
+//MARK: Check if tree left branch is symmteric to right branch
 
-func isSymmetric(root: TreeNode?) -> Bool {
+func isMirror(root: TreeNode?) -> Bool {
     guard let root = root else {
         return true
     }
-    return helper(p: root.left, q: root.right)
+    return mirror(p: root.left, q: root.right)
 }
 
-func helper(p: TreeNode?, q: TreeNode?) -> Bool {
+func mirror(p: TreeNode?, q: TreeNode?) -> Bool {
+    if p == nil && q == nil {
+        return true
+    }
+    if p == nil || q == nil || p?.value != q?.value {
+        return false
+    }
+    return mirror(p: p?.left, q: q?.right) && mirror(p: p?.right, q: q?.left)
+}
+
+
+
+//MARK: check if tree is subtree of another tree
+
+func equals(p: TreeNode?, q: TreeNode?) -> Bool {
     if p == nil && q == nil {
         return true
     }
@@ -805,9 +819,19 @@ func helper(p: TreeNode?, q: TreeNode?) -> Bool {
     if p == nil || q == nil || p?.value != q?.value {
         return false
     }
-    
-    return helper(p: p?.left, q: q?.right) && helper(p: p?.right, q: q?.left)
+    return equals(p: p!.left, q: q!.left) && equals(p: p!.right, q: q!.right)
 }
+
+func isSubtree(tree1: TreeNode?, tree2: TreeNode?) -> Bool {
+    if tree2 == nil { return true } // every leaf node has nil as sub tree
+    if tree1 == nil { return false } //if main tree itself is nil then no match
+    
+    if tree1?.value != tree2?.value { return false } // if values of nodes dont matches
+    
+    return equals(p: tree1, q: tree2) || isSubtree(tree1: tree1?.left, tree2: tree2) || isSubtree(tree1: tree1, tree2: tree2?.right)
+}
+
+
 
 class ViewController: UIViewController {
     
@@ -906,6 +930,17 @@ class ViewController: UIViewController {
         
         let resu = topKFrequentElements([1], 1)
         print(resu)
+        
+        //Mirror sub trees
+        let mirrorRoot = TreeNode(val: 1)
+        mirrorRoot.left = TreeNode(val: 2)
+        mirrorRoot.right = TreeNode(val: 2)
+        mirrorRoot.left?.left = TreeNode(val: 3)
+        mirrorRoot.left?.right = TreeNode(val: 4)
+        mirrorRoot.right?.left = TreeNode(val: 4)
+        mirrorRoot.right?.right = TreeNode(val: 3)
+        let istrue = isMirror(root: mirrorRoot)
+        print(istrue)
     }
 }
 
