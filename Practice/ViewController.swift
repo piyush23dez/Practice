@@ -827,10 +827,25 @@ func isSubtree(tree1: TreeNode?, tree2: TreeNode?) -> Bool {
     if tree1 == nil { return false } //if main tree itself is nil then no match
     
     if tree1?.value != tree2?.value { return false } // if values of nodes dont matches
-    
     return equals(p: tree1, q: tree2) || isSubtree(tree1: tree1?.left, tree2: tree2) || isSubtree(tree1: tree1, tree2: tree2?.right)
 }
 
+
+func removeDuplicates(array: inout [Int]) -> Int {
+    if array.count <= 1 {
+        return array.count
+    }
+    
+    var lastIndex = 0
+    
+    for num in array {
+        if num != array[lastIndex] {
+            lastIndex += 1
+            array[lastIndex] = num
+        }
+    }
+    return lastIndex + 1
+}
 
 
 class ViewController: UIViewController {
@@ -941,6 +956,11 @@ class ViewController: UIViewController {
         mirrorRoot.right?.right = TreeNode(val: 3)
         let istrue = isMirror(root: mirrorRoot)
         print(istrue)
+        
+        var duplicates = [0,0,1,1,1,2,2,3,3,4]
+        let length = removeDuplicates(array: &duplicates)
+        print(length)
+        
     }
 }
 
