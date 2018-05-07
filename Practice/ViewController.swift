@@ -173,14 +173,71 @@ class LinkList<T: Equatable> {
         p.next = nil
     }
     
-    var isCircular: Bool {
-        var slowPtr = head
-        var fastPtr = head
+    
+    func removeLoopFromLinkList(startNode: Node<T>) {
+        var previousPtr: Node<T>?
+        var fastPtr = startNode
+        var slowPtr = startNode
+      
+        //If fastPtr encounters NULL, it means there is no Loop in Linked list.
+        while fastPtr.next != nil && fastPtr.next?.next != nil {
+            previousPtr = fastPtr.next!
+            fastPtr = fastPtr.next!.next!
+            slowPtr = slowPtr.next!
+            
+            if slowPtr === fastPtr {
+                slowPtr = startNode
+                
+                //If loop start node is starting at the root Node, then slowPtr, fastPtr and head all point to the same location.
+                //we already capture previous node, just setting it to null will work in this case.
+                if slowPtr === fastPtr {
+                    previousPtr?.setLink(node: Node())
+                } else {
+                    //We need to first identify the start of loop node and then by setting just previous node of loop node next to null.  
+                    while slowPtr.next! !== fastPtr.next! {
+                        slowPtr = slowPtr.next!
+                        fastPtr = fastPtr.next!
+                    }
+                    fastPtr.setLink(node: Node())
+                }
+            }
+        }
+        print(startNode.data!)
+    }
+    
+    func getLoopNode(startNode: Node<T>) {
+        var fastPtr = startNode
+        var slowPtr = startNode
         
+        //If fastPtr encounters NULL, it means there is no Loop in Linked list.
         while fastPtr.next != nil {
             fastPtr = fastPtr.next!.next!
             slowPtr = slowPtr.next!
             
+            // if slowPtr and fastPtr meets, it means linked list contains loop.
+            if slowPtr === fastPtr {
+                //After meet, moving slowPtr to start node of list.
+                slowPtr = startNode
+                //Moving slowPtr and fastPtr one node at a time till the time they meet at common point.
+                while !(slowPtr === fastPtr) {
+                    fastPtr = fastPtr.next!
+                    slowPtr = slowPtr.next!
+                }
+                print("Loop start at node: \(slowPtr.data!)")
+                return
+            }
+        }
+        
+        print("No Loop")
+    }
+    
+    var isCircular: Bool {
+        var slowPtr = head
+        var fastPtr = head
+        
+        while fastPtr.next != nil && fastPtr.next?.next != nil {
+            fastPtr = fastPtr.next!.next!
+            slowPtr = slowPtr.next!
             if fastPtr === slowPtr {
                 return true
             }
@@ -852,6 +909,37 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let n1 = Node(data: 10)
+        let n2 = Node(data: 20)
+        let n3 = Node(data: 30)
+        let n4 = Node(data: 40)
+        let n5 = Node(data: 50)
+        let n6 = Node(data: 60)
+        let n7 = Node(data: 70)
+        let n8 = Node(data: 80)
+        
+        let loopList = LinkList<Int>()
+        loopList.insertAtEnd(node: n1)
+        loopList.insertAtEnd(node: n2)
+        loopList.insertAtEnd(node: n3)
+        loopList.insertAtEnd(node: n4)
+        loopList.insertAtEnd(node: n5)
+        loopList.insertAtEnd(node: n6)
+        loopList.insertAtEnd(node: n7)
+        loopList.insertAtEnd(node:n8)
+        
+        //to test loop in a linklist
+        n8.setLink(node: n6)
+        
+        loopList.getLoopNode(startNode: loopList.head)
+        //loopList.showList()
+        print(loopList.isCircular) // true
+        loopList.removeLoopFromLinkList(startNode: loopList.head)
+        print(loopList.isCircular) //false
+
+    
+        
         
         let node1  = Node<Int>()
         node1.data = 5
