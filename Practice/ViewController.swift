@@ -178,7 +178,7 @@ class LinkList<T: Equatable> {
         var previousPtr: Node<T>?
         var fastPtr = startNode
         var slowPtr = startNode
-      
+        
         //If fastPtr encounters NULL, it means there is no Loop in Linked list.
         while fastPtr.next != nil && fastPtr.next?.next != nil {
             previousPtr = fastPtr.next!
@@ -235,7 +235,7 @@ class LinkList<T: Equatable> {
         var slowPtr = head
         var fastPtr = head
         
-        while fastPtr.next != nil && fastPtr.next?.next != nil {
+        while fastPtr.next != nil && fastPtr.next!.next != nil {
             fastPtr = fastPtr.next!.next!
             slowPtr = slowPtr.next!
             if fastPtr === slowPtr {
@@ -904,11 +904,53 @@ func removeDuplicates(array: inout [Int]) -> Int {
     return lastIndex + 1
 }
 
+func shortestString(in words: [String]) -> (String, Int) {
+    var length = Int.max
+    var shortString = String()
+    
+    words.forEach { (word) in
+        if words.count < length {
+            length = word.count
+            shortString = word
+        }
+    }
+    return (shortString, length)
+}
+
+func longestCommonPrefix(strs: [String]) -> String {
+    
+    if strs.isEmpty {
+        return ""
+    }
+    
+    var longestCommonPrefix = strs.first!
+    
+    for i in 1..<strs.count {
+        var j = 0, currentStringArray = Array(strs[i])
+        while j < longestCommonPrefix.count && j < currentStringArray.count && currentStringArray[j] == Array(longestCommonPrefix)[j] {
+            j += 1
+        }
+        
+        if j == 0 {
+            return ""
+        }
+        
+        longestCommonPrefix = String(Array(longestCommonPrefix)[0..<j])
+    }
+    return longestCommonPrefix
+}
+
 
 class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let arr = ["geeksforgeeks", "geeks",
+                   "geek", "geezer"]
+        let lcp = longestCommonPrefix(strs: arr)
+        print(lcp)
+        
         
         let n1 = Node(data: 10)
         let n2 = Node(data: 20)
@@ -937,8 +979,8 @@ class ViewController: UIViewController {
         print(loopList.isCircular) // true
         loopList.removeLoopFromLinkList(startNode: loopList.head)
         print(loopList.isCircular) //false
-
-    
+        
+        
         
         
         let node1  = Node<Int>()
