@@ -941,10 +941,51 @@ func longestCommonPrefix(strs: [String]) -> String {
 }
 
 
+
+func productSelf(array: [Int]) {
+    var products = Array(repeating: 1, count: array.count)
+    
+    for i in (1..<array.count) {
+        products[i] = products[i-1] * array[i-1]
+    }
+    
+    var right = 1
+    
+    for i in (0..<array.count).reversed() {
+        products[i] = right * products[i]
+        right = right * array[i]
+    }
+    
+    print(products)
+}
+
+func permutation(of string: inout String, start: Int, end: Int) {
+    
+    if start == end {
+        print(string)
+    } else {
+        for i in start...end {
+            var str = Array(string)
+            str.swapAt(start, i)
+            string = String(str)
+            
+            permutation(of: &string, start: start+1, end: end)
+            str.swapAt(start, i)
+            string = String(str)
+        }
+    }
+}
+
 class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        var str = "ABC"
+        permutation(of: &str, start: 0, end: 2)
+        
+        
+        productSelf(array: [10, 3, 5, 6, 2])
         
         let arr = ["geeksforgeeks", "geeks",
                    "geek", "geezer"]
