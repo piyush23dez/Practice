@@ -1062,10 +1062,78 @@ func kthSmallestElementinBST(k: Int, root: TreeNode?) {
     }
 }
 
+
+struct DataStructure {
+    var hash = [Int:Int]()
+    var list = [Int]()
+    
+    mutating func add(element: Int) {
+        
+        if let _ = hash[element] {
+            return
+        }
+        
+        list.append(element)
+        hash.updateValue(list.count-1, forKey: element)
+    }
+    
+    
+    mutating func remove(element: Int) {
+        
+        //Check if element is present by hash lookup
+        guard let index = hash[element] else {
+            return
+        }
+        
+        //If present, then remove element from hash
+        hash.removeValue(forKey: element)
+        
+        //Swap element with last element so that remove from arr[] can be done in O(1) time
+        list.swapAt(list.count-1, index)
+        
+         //Remove last element (This is O(1))
+        list.remove(at: list.count-1)
+        
+         //Update hash table for new index of last element
+        let lastElement = list[list.count-1]
+        hash.updateValue(list.count-1, forKey: lastElement)
+    }
+    
+    var random: Int {
+        let randomIndex = Int(arc4random_uniform(UInt32(list.count)))
+        return list[randomIndex]
+    }
+    
+    func search(element: Int) -> Int? {
+        guard let index = hash[element] else {
+            return nil
+        }
+        return index
+    }
+}
+
+
 class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        var ds = DataStructure()
+        ds.add(element: 7)
+        ds.add(element: 9)
+        ds.add(element: 8)
+        ds.add(element: 6)
+        ds.add(element: 5)
+
+        
+        print(ds.list)
+
+        //ds.remove(element: 9)
+        //ds.remove(element: 7)
+        print(ds.list)
+        print(ds.random)
+        print(ds.random)
+
         
         let treeArray: [Int?] = [10, 20, 30, 40, 50]
         let root = convertArrayToBST(start: 0, end: treeArray.count - 1, nums: treeArray)
@@ -1120,9 +1188,6 @@ class ViewController: UIViewController {
         print(loopList.isCircular) // true
         loopList.removeLoopFromLinkList(startNode: loopList.head)
         print(loopList.isCircular) //false
-        
-        
-        
         
         let node1  = Node<Int>()
         node1.data = 5
@@ -1214,8 +1279,6 @@ class ViewController: UIViewController {
         //let root = convertArrayToBST(nums: treeArray)
         //inorderTraverse(root: root!)
         
-        
-        
         let resu = topKFrequentElements([1,2,1,2,3,4], 2)
         print(resu)
         
@@ -1236,6 +1299,8 @@ class ViewController: UIViewController {
         
     }
 }
+
+
 
 
 
