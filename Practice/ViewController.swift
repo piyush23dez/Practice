@@ -788,27 +788,32 @@ func inorderTraverse(root: TreeNode?) {
 }
 
 //MARK: Postorder (left -> right -> root)
+//https://www.programcreek.com/2012/12/leetcode-solution-of-iterative-binary-tree-postorder-traversal-in-java/
+//https://www.youtube.com/watch?v=Ut90klNN264
 
 func postorderTraverse(root: TreeNode?) {
     var stack = [TreeNode]()
     stack.append(root!)
     
+    var peeked = [TreeNode?]()
+
     while !stack.isEmpty {
         
-        let node = stack.last//peek
-        if node!.isLeaf {
-            let current = stack.popLast()
-            print(current!.value)
+        let temp = stack.last//peek
+        
+        if (temp!.left == nil && temp?.right == nil) || peeked.contains(where : { $0 === temp}) {
+            let node = stack.popLast()
+            print(node!.value)
         } else {
-            if node?.right != nil {
-                stack.append(node!.right!)
-                node?.right = nil
+            if temp?.right != nil {
+                stack.append(temp!.right!)
             }
             
-            if node?.left != nil {
-                stack.append(node!.left!)
-                node?.left = nil
+            if temp?.left != nil {
+                stack.append(temp!.left!)
             }
+            
+            peeked.append(temp)
         }
     }
 }
@@ -1011,25 +1016,25 @@ func sizeOf(tree: TreeNode?) -> Int {
     
 }
 
-func kthSmallestElementinBST(k: Int, root: TreeNode?) -> Int {
-    var node = root
+//https://www.programcreek.com/2014/07/leetcode-kth-smallest-element-in-a-bst-java/
+func kthSmallestElementinBST(k: Int, root: TreeNode?) {
+    var current = root, stack = [TreeNode]()
     var count = k
     
-    var leftsubtreeCount = 0
-    
-    while node != nil {
-        leftsubtreeCount = sizeOf(tree: node)
-        
-        if leftsubtreeCount - 1 == count {
-            return node!.value!
-        } else if leftsubtreeCount < count {
-            node = node?.right
-            count -= leftsubtreeCount + 1
+    while current != nil || !stack.isEmpty {
+        if current != nil {
+            stack.append(current!)
+            current = current?.left
         } else {
-            node = node?.left
+            let node = stack.popLast()
+            count -= 1
+            
+            if count == 0 {
+                print(node?.value)
+            }
+            current = node?.right
         }
     }
-    return  -1
 }
 
 class ViewController: UIViewController {
@@ -1041,9 +1046,10 @@ class ViewController: UIViewController {
         let root = convertArrayToBST(start: 0, end: treeArray.count - 1, nums: treeArray)
         //preorderTraverse(root: root!)
         //inorderTraverse(root: root!)
+        
         postorderTraverse(root: root!)
 
-        //kthSmallestElementinBST(k: 1, root: root)
+        let kthSmallest = kthSmallestElementinBST(k: 1, root: root)
         
         
         var dups = [1,4,2,3,1]
@@ -1184,7 +1190,7 @@ class ViewController: UIViewController {
         
         
         
-        let resu = topKFrequentElements([1], 1)
+        let resu = topKFrequentElements([1,2,1,2,3,4], 2)
         print(resu)
         
         //Mirror sub trees
