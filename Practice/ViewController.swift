@@ -1016,10 +1016,35 @@ func sizeOf(tree: TreeNode?) -> Int {
     
 }
 
+//https://www.careercup.com/question?id=11298700
+func kthLargestElementinBST(k: Int, root: TreeNode?) {
+    var current = root, stack = [TreeNode]()
+    var count = k
+    
+    while current != nil || !stack.isEmpty {
+        if current != nil {
+            stack.append(current!)
+            current = current?.right
+        } else {
+            let node = stack.popLast()
+            count -= 1
+            if count == 0 {
+                print(node?.value)
+                break
+            }
+            current = node?.left
+        }
+    }
+}
+
 //https://www.programcreek.com/2014/07/leetcode-kth-smallest-element-in-a-bst-java/
 func kthSmallestElementinBST(k: Int, root: TreeNode?) {
     var current = root, stack = [TreeNode]()
     var count = k
+    
+    if root == nil {
+        print(" ")
+    }
     
     while current != nil || !stack.isEmpty {
         if current != nil {
@@ -1042,7 +1067,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let treeArray: [Int?] = [1, 2, 3]
+        let treeArray: [Int?] = [10, 20, 30, 40, 50]
         let root = convertArrayToBST(start: 0, end: treeArray.count - 1, nums: treeArray)
         //preorderTraverse(root: root!)
         //inorderTraverse(root: root!)
@@ -1050,7 +1075,8 @@ class ViewController: UIViewController {
         postorderTraverse(root: root!)
 
         let kthSmallest = kthSmallestElementinBST(k: 1, root: root)
-        
+        let kthlargest = kthLargestElementinBST(k: 2, root: root)
+
         
         var dups = [1,4,2,3,1]
         findDuplicate(array: &dups)
