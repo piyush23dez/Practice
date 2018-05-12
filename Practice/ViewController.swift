@@ -539,18 +539,18 @@ func fizzBuzz(of number: Int) -> [String] {
 }
 
 class TreeNode {
-    var value: Int
+    var value: Int?
     var left: TreeNode?
     var right: TreeNode?
     
-    init(val: Int) {
+    init(val: Int?) {
         self.value = val
         left = nil
         right = nil
     }
     
     var isLeaf: Bool {
-        return left == nil && right == nil
+        return left == nil ? right == nil : false
     }
 }
 
@@ -731,39 +731,40 @@ func flatten<T>(s: [T]) -> [T] {
 
 //MARK: Tree
 
-func convertArrayToBST(nums: [Int]) -> TreeNode? {
+func convertArrayToBST(start: Int, end: Int, nums: [Int?]) -> TreeNode? {
     if nums.isEmpty {
         return nil
     }
     
-    let mid = nums[nums.count/2]
-    let tree = TreeNode(val: mid)
+    if start > end {
+        return nil
+    }
     
-    let leftArray = Array(nums[0..<nums.count/2])
-    let rightArray = Array(nums[nums.count/2 + 1..<nums.count])
-    tree.left = convertArrayToBST(nums: leftArray)
-    tree.right = convertArrayToBST(nums: rightArray)
-    return tree
+    let mid =  (start + end) / 2
+    let root = TreeNode(val: nums[mid])
+    root.left = convertArrayToBST(start: start, end: mid-1, nums: nums)
+    root.right = convertArrayToBST(start: mid + 1, end: end, nums: nums)
+
+    return root
 }
 
 
 //MARK: Preorder (root -> left -> right)
 
 func preorderTraverse(root: TreeNode?) {
-    var current = root, stack = [TreeNode]()
-    stack.append(current!)
+    var stack = [TreeNode]()
+    stack.append(root!)
     
-    while current != nil {
+    while !stack.isEmpty {
+        let node = stack.popLast()
+        print(node?.value)
         
-        let node = stack.removeLast()
-        print(node.value)
-        
-        if current?.right != nil {
-            current = current?.right
+        if node?.right != nil {
+            stack.append(node!.right!)
         }
         
-        if current?.left != nil {
-            current = current?.left
+        if node?.left != nil {
+            stack.append(node!.left!)
         }
     }
 }
@@ -774,15 +775,14 @@ func preorderTraverse(root: TreeNode?) {
 func inorderTraverse(root: TreeNode?) {
     var current = root, stack = [TreeNode]()
     
-    if current != nil || !stack.isEmpty {
-        
+    while current != nil || !stack.isEmpty {
         if current != nil {
             stack.append(current!)
             current = current?.left
         } else {
             let node = stack.popLast()
             print(node!.value)
-            current = current?.right
+            current = node?.right
         }
     }
 }
@@ -795,9 +795,10 @@ func postorderTraverse(root: TreeNode?) {
     
     while !stack.isEmpty {
         
-        let node = stack.last
+        let node = stack.last//peek
         if node!.isLeaf {
-            print(node!.value)
+            let current = stack.popLast()
+            print(current!.value)
         } else {
             if node?.right != nil {
                 stack.append(node!.right!)
@@ -976,10 +977,77 @@ func permutation(of string: inout String, start: Int, end: Int) {
     }
 }
 
+func findDuplicate(array: inout [Int]) {
+    var set = Set<Int>()
+    
+    for i in 0..<array.count {
+      //get array number to be used as index
+      let number = abs(array[i])
+        
+        //check this index value is negative or not if yes then add to set
+        if array[number] < 0 {
+            set.insert(abs(array[i]))
+        } else {
+            //or make it that index value negative
+            array[i] = -array[number]
+        }
+    }
+    
+    for index in 0..<array.count {
+        array[index] = abs(array[index])
+    }
+}
+
+func sizeOf(tree: TreeNode?) -> Int {
+    if tree == nil {
+        return 0
+    }
+    
+    if tree?.left == nil && tree?.right == nil {
+        return 1
+    }
+    
+    return sizeOf(tree:  tree?.left) + sizeOf(tree: tree?.right) + 1
+    
+}
+
+func kthSmallestElementinBST(k: Int, root: TreeNode?) -> Int {
+    var node = root
+    var count = k
+    
+    var leftsubtreeCount = 0
+    
+    while node != nil {
+        leftsubtreeCount = sizeOf(tree: node)
+        
+        if leftsubtreeCount - 1 == count {
+            return node!.value!
+        } else if leftsubtreeCount < count {
+            node = node?.right
+            count -= leftsubtreeCount + 1
+        } else {
+            node = node?.left
+        }
+    }
+    return  -1
+}
+
 class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let treeArray: [Int?] = [1, 2, 3]
+        let root = convertArrayToBST(start: 0, end: treeArray.count - 1, nums: treeArray)
+        //preorderTraverse(root: root!)
+        //inorderTraverse(root: root!)
+        postorderTraverse(root: root!)
+
+        //kthSmallestElementinBST(k: 1, root: root)
+        
+        
+        var dups = [1,4,2,3,1]
+        findDuplicate(array: &dups)
         
         var str = "ABC"
         permutation(of: &str, start: 0, end: 2)
@@ -1110,9 +1178,11 @@ class ViewController: UIViewController {
         let s = flatten(s: ["a","b", ["c","d", ["e","f", ["g","h"]]]])
         print(r,s)
         
-        let treeArray = [1,3,5,7,9]
-        let root = convertArrayToBST(nums: treeArray)
-        inorderTraverse(root: root!)
+        //let treeArray = [1,3,5,7,9]
+        //let root = convertArrayToBST(nums: treeArray)
+        //inorderTraverse(root: root!)
+        
+        
         
         let resu = topKFrequentElements([1], 1)
         print(resu)
