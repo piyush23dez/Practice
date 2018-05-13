@@ -1112,39 +1112,57 @@ struct DataStructure {
     }
 }
 
-func mergeOverlapping(intervals: [ClosedRange<Int>]) {
-    var result = [ClosedRange<Int>]()
-    var accumulator = ClosedRange<Int>(0...0)
-    let sortedIntervals: [ClosedRange<Int>] = intervals.sorted(by: { $0.lowerBound < $1.lowerBound })
+public class Interval {
+    public var start: Int
+    public var end: Int
+    
+    public init(_ start: Int, _ end: Int) {
+        self.start = start
+        self.end = end
+    }
+}
+
+
+
+extension Interval: Equatable {
+    public static func ==(lhs: Interval, rhs: Interval) -> Bool {
+        return lhs.start == rhs.end
+    }
+}
+
+func mergeOverlap(intervals: [Interval]) -> [Interval] {
+  
+    if intervals.isEmpty {
+        return []
+    }
+    
+    var result = [Interval](), accumulator = Interval(-1, -1)
+    let sortedIntervals = intervals.sorted(by: {$0.start < $1.start })
     
     for interval in sortedIntervals {
+        //let rangeInterval = Range<Int>(interval.start...interval.end)
         
-        if accumulator == ClosedRange<Int>(0...0) {
+        if accumulator == Interval(-1, -1) {
             accumulator = interval
         }
         
-        if accumulator.upperBound >= interval.upperBound {
-            //accumulator is already in range
+        if accumulator.end >= interval.end {
+            //accumulator is in range
         }
         
-        else if accumulator.upperBound > interval.lowerBound {
-            accumulator = ClosedRange(accumulator.lowerBound...interval.upperBound)
-        }
-        
-        else if accumulator.upperBound <= interval.lowerBound {
-            //interval doesnt overlap
+        else if accumulator.end >= interval.start {
+            accumulator.end = interval.end
+        } else if accumulator.end <= interval.start {
             result.append(accumulator)
             accumulator = interval
         }
     }
     
-    if accumulator != ClosedRange<Int>(0...0) {
+    if accumulator !== Interval(0, 0) {
         result.append(accumulator)
     }
-    
-    print(result)
+    return result
 }
-
 
 func findPeakElement(array: [Int]) -> Int {
     if array.isEmpty {
@@ -1176,9 +1194,12 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //{6,8}, {1,9}, {2,4}, {4,7}
-        let intervals: [ClosedRange<Int>] = [ClosedRange<Int>(6...8), ClosedRange<Int>(1...9), ClosedRange<Int>(2...4),  ClosedRange<Int>(4...7)]
-        let test1 = mergeOverlapping(intervals: intervals)
+        
+        //let intervalArray = [[1,3],[2,6],[8,10],[15,18]]
+        let intervalArray = [[1,4], [0,4]]
+        let intervalsMapped = intervalArray.map { Interval($0.first!, $0.last!)}
+        let overlapped = mergeOverlap(intervals: intervalsMapped)
+        print(overlapped)
         
         let peakelement = findPeakElement(array: [1,2,3,1])
         print("peak eleement:\(peakelement)")
