@@ -1158,7 +1158,7 @@ func mergeOverlap(intervals: [Interval]) -> [Interval] {
         }
     }
     
-    if accumulator !== Interval(0, 0) {
+    if accumulator !== Interval(-1, -1) {
         result.append(accumulator)
     }
     return result
