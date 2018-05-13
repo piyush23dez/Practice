@@ -1112,11 +1112,48 @@ struct DataStructure {
     }
 }
 
+func mergeOverlapping(intervals: [ClosedRange<Int>]) {
+    var combined = [ClosedRange<Int>]()
+    var accumulator = ClosedRange<Int>(0...0)
+    let sortedIntervals: [ClosedRange<Int>] = intervals.sorted(by: { $0.lowerBound < $1.lowerBound })
+    
+    for interval in sortedIntervals {
+        
+        if accumulator == ClosedRange<Int>(0...0) {
+            accumulator = interval
+        }
+        
+        if accumulator.upperBound >= interval.upperBound {
+            //accumulator is already in range
+        }
+        
+        else if accumulator.upperBound > interval.lowerBound {
+            accumulator = ClosedRange(accumulator.lowerBound...interval.upperBound)
+        }
+        
+        else if accumulator.upperBound <= interval.lowerBound {
+            //interval doesnt overlap
+            combined.append(accumulator)
+            accumulator = interval
+        }
+    }
+    
+    if accumulator != ClosedRange<Int>(0...0) {
+        combined.append(accumulator)
+    }
+    
+    print(combined)
+}
+
+
 
 class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let intervals: [ClosedRange<Int>] = [ClosedRange<Int>(1...3), ClosedRange<Int>(2...6), ClosedRange<Int>(8...10), ClosedRange<Int>(7...11)]
+        let test1 = mergeOverlapping(intervals: intervals)
         
         var ds = DataStructure()
         ds.add(element: 7)
