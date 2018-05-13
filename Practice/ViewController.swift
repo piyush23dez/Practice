@@ -1113,7 +1113,7 @@ struct DataStructure {
 }
 
 func mergeOverlapping(intervals: [ClosedRange<Int>]) {
-    var combined = [ClosedRange<Int>]()
+    var result = [ClosedRange<Int>]()
     var accumulator = ClosedRange<Int>(0...0)
     let sortedIntervals: [ClosedRange<Int>] = intervals.sorted(by: { $0.lowerBound < $1.lowerBound })
     
@@ -1133,27 +1133,55 @@ func mergeOverlapping(intervals: [ClosedRange<Int>]) {
         
         else if accumulator.upperBound <= interval.lowerBound {
             //interval doesnt overlap
-            combined.append(accumulator)
+            result.append(accumulator)
             accumulator = interval
         }
     }
     
     if accumulator != ClosedRange<Int>(0...0) {
-        combined.append(accumulator)
+        result.append(accumulator)
     }
     
-    print(combined)
+    print(result)
 }
 
+
+func findPeakElement(array: [Int]) -> Int {
+    if array.isEmpty {
+        return -1
+    }
+    
+    var lb = 0, ub = array.count-1
+    
+    while lb + 1 < ub {
+        let mid = lb + (ub-lb)/2
+        
+        //if mid element is smaller than its next neighbour then peak element will be in right side
+        if array[mid] < array[mid + 1] {
+            lb = mid
+        }
+        
+        //if mid element is smaller than its previuos neighbour then peak element will be in left side
+        else if array[mid] < array[mid-1] {
+            ub = mid
+        } else {
+            return array[mid]
+        }
+    }
+    return array[lb] > array[ub] ? array[lb] : array[ub]
+}
 
 
 class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        let intervals: [ClosedRange<Int>] = [ClosedRange<Int>(1...3), ClosedRange<Int>(2...6), ClosedRange<Int>(8...10), ClosedRange<Int>(7...11)]
+        //{6,8}, {1,9}, {2,4}, {4,7}
+        let intervals: [ClosedRange<Int>] = [ClosedRange<Int>(6...8), ClosedRange<Int>(1...9), ClosedRange<Int>(2...4),  ClosedRange<Int>(4...7)]
         let test1 = mergeOverlapping(intervals: intervals)
+        
+        let peakelement = findPeakElement(array: [1,2,3,1])
+        print("peak eleement:\(peakelement)")
         
         var ds = DataStructure()
         ds.add(element: 7)
