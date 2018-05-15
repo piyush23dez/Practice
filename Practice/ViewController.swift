@@ -1130,6 +1130,9 @@ extension Interval: Equatable {
     }
 }
 
+
+
+
 func mergeOverlap(intervals: [Interval]) -> [Interval] {
   
     if intervals.isEmpty {
@@ -1164,6 +1167,7 @@ func mergeOverlap(intervals: [Interval]) -> [Interval] {
     return result
 }
 
+
 func findPeakElement(array: [Int]) -> Int {
     if array.isEmpty {
         return -1
@@ -1188,6 +1192,41 @@ func findPeakElement(array: [Int]) -> Int {
     }
     return array[lb] > array[ub] ? array[lb] : array[ub]
 }
+
+
+func searchInRotatedArray(nums: [Int], target: Int) -> Int {
+    
+    var left = 0, right = nums.count - 1
+    
+    while left <= right {
+        let mid = (left + right) / 2
+        
+        //if mid element equals target we return it
+        if nums[mid] == target {
+            return mid
+        }
+        //check if mid element is smaller than first element
+        else if nums[left] <= nums[mid] {
+            
+            //check if target number is between left <= target <= mid
+            if target >= nums[left] && target <= nums[mid] {
+                right = mid - 1
+            } else {
+                left = mid + 1
+            }
+        } else {
+            //check if target number is between mid <= target <= right
+            if target >= nums[mid] && target <= nums[right] {
+                left = mid + 1
+            } else {
+                right = mid - 1
+            }
+        }
+    }
+    
+    return  -1
+}
+
 
 
 class ViewController: UIViewController {
