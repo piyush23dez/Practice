@@ -1205,7 +1205,7 @@ func searchInRotatedArray(nums: [Int], target: Int) -> Int {
         if nums[mid] == target {
             return mid
         }
-        //check if mid element is smaller than first element
+        //check if first element is smallerthan mid element 
         else if nums[left] <= nums[mid] {
             
             //check if target number is between left <= target <= mid
