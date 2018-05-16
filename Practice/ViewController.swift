@@ -947,24 +947,6 @@ func longestCommonPrefix(strs: [String]) -> String {
 }
 
 
-
-func productSelf(array: [Int]) {
-    var products = Array(repeating: 1, count: array.count)
-    
-    for i in (1..<array.count) {
-        products[i] = products[i-1] * array[i-1]
-    }
-    
-    var right = 1
-    
-    for i in (0..<array.count).reversed() {
-        products[i] = right * products[i]
-        right = right * array[i]
-    }
-    
-    print(products)
-}
-
 func permutation(of string: inout String, start: Int, end: Int) {
     
     if start == end {
@@ -1205,7 +1187,7 @@ func searchInRotatedArray(nums: [Int], target: Int) -> Int {
         if nums[mid] == target {
             return mid
         }
-        //check if first element is smallerthan mid element 
+        //check if first element is smaller than mid element 
         else if nums[left] <= nums[mid] {
             
             //check if target number is between left <= target <= mid
@@ -1228,11 +1210,60 @@ func searchInRotatedArray(nums: [Int], target: Int) -> Int {
 }
 
 
+func maxSumSubarray(from arr: [Int]) {
+    var currentMax = arr[0], best = arr[0]
+    
+    for i in 1..<arr.count {
+        currentMax = max(arr[i], currentMax + arr[i])
+        best = max(currentMax, best)
+    }
+    
+    print(best)
+}
+
+func maxProduct(nums: [Int]) -> Int {
+    var min_soFar = nums[0]
+    var max_soFar = nums[0]
+    var max_global = nums[0]
+    
+    for i in 1..<nums.count {
+        let a = max_soFar * nums[i]
+        let b = min_soFar * nums[i]
+        
+        max_soFar = max(a, b, nums[i])
+        min_soFar = min(a, b, nums[i])
+        
+        max_global = max(max_global, max_soFar)
+    }
+    
+    return max_global
+}
+
+func productSelf(array: [Int]) {
+    var products = Array(repeating: 1, count: array.count)
+    
+    //In this loop, products variable contains product of elements on left side excluding array[i] */
+    for i in (1..<array.count) {
+        products[i] = products[i-1] * array[i-1]
+    }
+    
+    var right = 1
+    
+    /* In this loop, products variable contains product of elements on right side excluding array[i] */
+    for i in (0..<array.count).reversed() {
+        products[i] = right * products[i]
+        right = right * array[i]
+    }
+    
+    print(products)
+}
 
 class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        maxSumSubarray(from: [-2,3,-4])
         
         //let intervalArray = [[1,3],[2,6],[8,10],[15,18]]
         let intervalArray = [[1,4], [0,4]]
@@ -1278,7 +1309,7 @@ class ViewController: UIViewController {
         permutation(of: &str, start: 0, end: 2)
         
         
-        productSelf(array: [10, 3, 5, 6, 2])
+        productSelf(array: [1, 2, 3, 4])
         
         let arr = ["geeksforgeeks", "geeks",
                    "geek", "geezer"]
