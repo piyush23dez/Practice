@@ -1210,6 +1210,56 @@ func searchInRotatedArray(nums: [Int], target: Int) -> Int {
 }
 
 
+func findMin(nums: [Int]) -> Int {
+    
+    if nums.isEmpty {
+        return 0
+    }
+    
+    if nums.count == 1 {
+        return nums.first!
+    }
+    
+    if nums.count == 2 {
+        return min(nums[0], nums[1])
+    }
+    
+    var start = 0, stop = nums.count - 1
+    
+    while start < stop {
+        if nums[start] < nums [stop] {
+            return nums[start]
+        }
+        
+        let mid = (start + stop) / 2
+        
+        if mid == start {
+            break
+        }
+        
+        if nums[mid] > nums[start] {
+            start = mid
+        } else if nums [mid] < nums[start] {
+            stop = mid
+        }
+    }
+    return min(nums[start], nums[stop])
+}
+
+func findMin2(nums: [Int]) -> Int {
+    
+    if nums.count <= 0 {
+        return 0
+    }
+    
+    for i in 0..<nums.count {
+        if nums[i] > nums [i + 1] {
+            return nums[i+1]
+        }
+    }
+    return nums.first!
+}
+
 func maxSumSubarray(from arr: [Int]) {
     var currentMax = arr[0], best = arr[0]
     
