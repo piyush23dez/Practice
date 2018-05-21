@@ -744,7 +744,7 @@ func convertArrayToBST(start: Int, end: Int, nums: [Int?]) -> TreeNode? {
     let root = TreeNode(val: nums[mid])
     root.left = convertArrayToBST(start: start, end: mid-1, nums: nums)
     root.right = convertArrayToBST(start: mid + 1, end: end, nums: nums)
-
+    
     return root
 }
 
@@ -796,7 +796,7 @@ func postorderTraverse(root: TreeNode?) {
     stack.append(root!)
     
     var peeked = [TreeNode?]()
-
+    
     while !stack.isEmpty {
         
         let temp = stack.last//peek
@@ -933,6 +933,7 @@ func longestCommonPrefix(strs: [String]) -> String {
     
     for i in 1..<strs.count {
         var j = 0, currentStringArray = Array(strs[i])
+        
         while j < longestCommonPrefix.count && j < currentStringArray.count && currentStringArray[j] == Array(longestCommonPrefix)[j] {
             j += 1
         }
@@ -968,8 +969,8 @@ func findDuplicate(array: inout [Int]) {
     var set = Set<Int>()
     
     for i in 0..<array.count {
-      //get array number to be used as index
-      let number = abs(array[i])
+        //get array number to be used as index
+        let number = abs(array[i])
         
         //check this index value is negative or not if yes then add to set
         if array[number] < 0 {
@@ -1073,10 +1074,10 @@ struct DataStructure {
         //Swap element with last element so that remove from arr[] can be done in O(1) time
         list.swapAt(list.count-1, index)
         
-         //Remove last element (This is O(1))
+        //Remove last element (This is O(1))
         list.remove(at: list.count-1)
         
-         //Update hash table for new index of last element
+        //Update hash table for new index of last element
         let lastElement = list[list.count-1]
         hash.updateValue(list.count-1, forKey: lastElement)
     }
@@ -1116,7 +1117,7 @@ extension Interval: Equatable {
 
 
 func mergeOverlap(intervals: [Interval]) -> [Interval] {
-  
+    
     if intervals.isEmpty {
         return []
     }
@@ -1134,7 +1135,7 @@ func mergeOverlap(intervals: [Interval]) -> [Interval] {
         if accumulator.end >= interval.end {
             //accumulator is in range
         }
-        
+            
         else if accumulator.end >= interval.start {
             accumulator.end = interval.end
         } else if accumulator.end <= interval.start {
@@ -1164,8 +1165,8 @@ func findPeakElement(array: [Int]) -> Int {
         if array[mid] < array[mid + 1] {
             lb = mid
         }
-        
-        //if mid element is smaller than its previuos neighbour then peak element will be in left side
+            
+            //if mid element is smaller than its previuos neighbour then peak element will be in left side
         else if array[mid] < array[mid-1] {
             ub = mid
         } else {
@@ -1187,7 +1188,7 @@ func searchInRotatedArray(nums: [Int], target: Int) -> Int {
         if nums[mid] == target {
             return mid
         }
-        //check if first element is smaller than mid element 
+            //check if first element is smaller than mid element
         else if nums[left] <= nums[mid] {
             
             //check if target number is between left <= target <= mid
@@ -1308,13 +1309,89 @@ func productSelf(array: [Int]) {
     print(products)
 }
 
+//Brute force approach for coing change
+func coinChangeBruteForce(money: Int, coins:[Int]) -> Int {
+    
+    if money == 0 {
+        return 0
+    }
+    var result = Int.max
+    
+    for coin in coins {
+        if money >= coin {
+            result = min(result, coinChangeBruteForce(money: money - coin, coins: coins) + 1)
+        }
+    }
+    return result
+}
+
+//Memoized approach for coin change
+func coinChangeMemo(money: Int, coins:[Int]) -> Int {
+    
+    if let memo = memo[money] {
+        return memo
+    }
+    
+    if money == 0 {
+        return 0
+    }
+    
+    var result = Int.max
+    
+    for coin in coins {
+        if money >= coin {
+            result = min(result, coinChangeMemo(money: money - coin, coins: coins) + 1)
+            memo[money] = result
+        }
+    }
+    
+    return result
+}
+
+//DP approach for coin change
+func coinChangeDP(money: Int, coins:[Int]) -> Int {
+    var result = Array(repeating: Int.max, count: money + 1)
+    result[0] = 0
+    
+    for i in 1...money {
+        for coin in coins {
+            if i - coin >= 0 {
+                result[i] = min(result[i], result[i-coin] + 1)
+            }
+        }
+    }
+    return result[money]
+}
+
+
+//DP approach for coin change ways
+func coinChangeWaysDP(money: Int, coins:[Int]) -> Int {
+    var result = Array(repeating: 0, count: money + 1)
+    result[0] = 1
+    
+    for coin in coins {
+        for i in 1..<result.count {
+            if i >= coin {
+                result[i] += result[i-coin]
+            }
+        }
+    }
+    return result[money]
+}
+
+
+
+var memo = [Int : Int]()
+
 class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let and = coinChangeWaysDP(money: 12, coins: [1,2,5])
+
+        //let ans = minCoinsChangeRecursive(coins: [25, 5, 1], money: 25)
         maxSumSubarray(from: [-2,3,-4])
-        
         //let intervalArray = [[1,3],[2,6],[8,10],[15,18]]
         let intervalArray = [[1,4], [0,4]]
         let intervalsMapped = intervalArray.map { Interval($0.first!, $0.last!)}
@@ -1330,16 +1407,16 @@ class ViewController: UIViewController {
         ds.add(element: 8)
         ds.add(element: 6)
         ds.add(element: 5)
-
+        
         
         print(ds.list)
-
+        
         //ds.remove(element: 9)
         //ds.remove(element: 7)
         print(ds.list)
         print(ds.random)
         print(ds.random)
-
+        
         
         let treeArray: [Int?] = [10, 20, 30, 40, 50]
         let root = convertArrayToBST(start: 0, end: treeArray.count - 1, nums: treeArray)
@@ -1347,10 +1424,10 @@ class ViewController: UIViewController {
         //inorderTraverse(root: root!)
         
         postorderTraverse(root: root!)
-
+        
         let kthSmallest = kthSmallestElementinBST(k: 1, root: root)
         let kthlargest = kthLargestElementinBST(k: 2, root: root)
-
+        
         
         var dups = [1,4,2,3,1]
         findDuplicate(array: &dups)
