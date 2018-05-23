@@ -1381,10 +1381,42 @@ func coinChangeWaysDP(money: Int, coins:[Int]) -> Int {
 }
 
 
+
+//MARK: Brute force
+
+func knapsack(weights: [Int], values: [Int], capacity: Int, i: Int) -> Int {
+    if i == weights.count {
+        return 0
+    }
+    
+    //if weights of the (weights.count - 1) item is more thena knapsack capacity
+    //then item can't be included in the optimum solution
+    
+    if capacity < weights[i]  {
+        return knapsack(weights: weights, values: values, capacity: capacity, i: i+1)
+    }
+        
+        //return max of two cases
+        //(1). weights-1 item included
+        //(2). weights-1 item not included
+        
+    else {
+        let value1 = knapsack(weights: weights, values: values, capacity: capacity, i: i+1)
+        let value2 = knapsack(weights: weights, values: values, capacity: capacity - weights[i], i: i+1) + values[i]
+        return max(value1, value2)
+    }
+}
+
+func knapsack(weights: [Int], values: [Int], capacity: Int) -> Int {
+    return knapsack(weights: weights, values: values, capacity: capacity, i: 0)
+}
+
+
+//MARK: DP
+
 func knapsack(weights: [Int], values: [Int], totalWeight: Int) {
     
     var cache = Array(repeating: Array(repeating: -1, count: totalWeight + 1), count: weights.count + 1)
-    
     for i in 0...weights.count {
         for j in 0...totalWeight {
             
@@ -1392,17 +1424,16 @@ func knapsack(weights: [Int], values: [Int], totalWeight: Int) {
                 cache[i][j] = 0
             }
             
-            //if weight is less than or equal to the max capacity weight of the bag
-            else if weights[i-1] <= j {
-                cache[i][j] = max(cache[i-1][j], cache[i-1][j-weights[i-1]] + values[i-1])
-            } else {
+            //if current capacity of the bag  j: [0.1.2.3.4.5] is less than available weights
+            else if j < weights[i-1] {
                 cache[i][j] = cache[i-1][j]
+            } else {
+                cache[i][j] = max(cache[i-1][j], cache[i-1][j-weights[i-1]] + values[i-1])
             }
         }
     }
     print(cache[weights.count][totalWeight])
 }
-
 
 
 var memo = [Int : Int]()
@@ -1411,6 +1442,9 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let knp = knapsack(weights: [1,2,3], values: [6,10,12], capacity: 5)
+        print(knp)
         
         knapsack(weights: [1,2,3], values: [6,10,12], totalWeight: 5)
         
