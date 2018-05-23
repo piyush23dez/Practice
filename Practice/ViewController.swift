@@ -1348,6 +1348,7 @@ func coinChangeMemo(money: Int, coins:[Int]) -> Int {
     return result
 }
 
+
 //DP approach for coin change
 func coinChangeDP(money: Int, coins:[Int]) -> Int {
     var result = Array(repeating: Int.max, count: money + 1)
@@ -1380,6 +1381,29 @@ func coinChangeWaysDP(money: Int, coins:[Int]) -> Int {
 }
 
 
+func knapsack(weights: [Int], values: [Int], totalWeight: Int) {
+    
+    var cache = Array(repeating: Array(repeating: -1, count: totalWeight + 1), count: weights.count + 1)
+    
+    for i in 0...weights.count {
+        for j in 0...totalWeight {
+            
+            if i == 0 || j == 0 {
+                cache[i][j] = 0
+            }
+            
+            //if weight is less than or equal to the max capacity weight of the bag
+            else if weights[i-1] <= j {
+                cache[i][j] = max(cache[i-1][j], cache[i-1][j-weights[i-1]] + values[i-1])
+            } else {
+                cache[i][j] = cache[i-1][j]
+            }
+        }
+    }
+    print(cache[weights.count][totalWeight])
+}
+
+
 
 var memo = [Int : Int]()
 
@@ -1387,6 +1411,8 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        knapsack(weights: [1,2,3], values: [6,10,12], totalWeight: 5)
         
         let and = coinChangeWaysDP(money: 12, coins: [1,2,5])
 
