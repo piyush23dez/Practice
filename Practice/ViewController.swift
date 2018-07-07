@@ -433,7 +433,8 @@ func convertRowsToColumns(array: [[Int]]) {
     print(newArray)
 }
 
-//Mark: 2Sum brute force appraoch - O(n2)
+// Mark: 2Sum brute force appraoch - O(n2)
+
 func twoSum(array: [Int], target: Int) -> [(Int, Int)] {
     var pairs = [(Int, Int)]()
     for i in 0..<array.count {
@@ -446,19 +447,22 @@ func twoSum(array: [Int], target: Int) -> [(Int, Int)] {
     return pairs
 }
 
-//Mark: 2Sum optimized approach - O(n)
+// Mark: 2Sum optimized approach, keep a track of target-number in the hashTable - O(n)
+
 func twoSum(list: [Int], target: Int) -> [(Int, Int)] {
-    var dict = [Int : Int] ()
-    var pair = [(Int, Int)] ()
+    var hashTable = [Int : Int] ()
+    var pairs = [(Int, Int)] ()
     
-    //traverse through the list and check if target-number value exist in hash
+    //traverse through the list and check if target-number key exist in the hashTable then its a sum.
     for (index, number) in list.enumerated() {
-        if let targetIndex = dict[target-number] {
-            pair.append((targetIndex, index))
+        if let targetIndex = hashTable[target-number] {
+            pairs.append((targetIndex, index))
         }
-        dict[number] = index
+        
+        //if we cant find the key in hashTable then add the number (key) and index (value)
+        hashTable[number] = index
     }
-    return pair
+    return pairs
 }
 
 
@@ -587,7 +591,7 @@ func buySellStocksI(prices: [Int]) -> (Int, (Int, Int)) {
     var profit = 0, minPrice = prices.first ?? Int.max
     var days: (buyDay: Int, sellDay: Int) = (0, 0)
     
-    for price in prices {
+    for (_, price) in prices.enumerated() {
         if price < minPrice {
             minPrice = price
         } else {
@@ -602,8 +606,8 @@ func buySellStocksI(prices: [Int]) -> (Int, (Int, Int)) {
 
 
 /*  Given an array of stock prices, find the maximum profit that can be earned by performing multiple non-overlapping transactions (buy and sell).
- Note that you cannot buy on day 1, buy on day 2 and sell them later, as you are
- engaging multiple transactions at the same time. You must sell before buying again. */
+    Note that you cannot buy on day 1, buy on day 2 and sell them later, as you are
+    engaging multiple transactions at the same time. You must sell before buying again. */
 
 func buySellStocksII(prices: [Int]) ->  (Int, [(Int, Int)]) {
     var profit = 0
@@ -1435,6 +1439,85 @@ func knapsack(weights: [Int], values: [Int], totalWeight: Int) {
     print(cache[weights.count][totalWeight])
 }
 
+func LongestIncreasingSubsequence(nums: [Int]) -> Int {
+    var length_global = 0
+    var length_current = [Int](repeating: 1, count: nums.count)
+    
+    for i in 0..<nums.count {
+        for j in 0..<i {
+            if nums[i] > nums[j] {
+                length_current[i] = max(length_current[i], length_current[j] + 1)
+            }
+        }
+        length_global = max(length_global, length_current[i])
+    }
+    return length_global
+}
+
+func helperLCS(i: Int, j: Int, str1: String, str2: String) -> Int {
+    let str1Arr = Array(str1)
+    let str2Arr = Array(str2)
+    
+    if i > str1Arr.count-1 || j > str2Arr.count-1 {
+        return 0
+    } else if str1Arr[i] == str2Arr[j] {
+        return 1 + helperLCS(i: i+1, j: j+1, str1: str1, str2: str2)
+    } else {
+        return max(helperLCS(i: i+1, j: j, str1: str1, str2: str2), helperLCS(i: i, j: j+1, str1: str1, str2: str2))
+    }
+}
+
+func LCSRecursion(string1: String, string2: String) -> Int {
+    return helperLCS(i: 0, j: 0, str1: string1, str2: string2)
+}
+
+func LCSDynamicProgramming(A: String, B: String) -> [[Int]] {
+    let aArray = Array(A)
+    let bArray = Array(B)
+    var lcs = [[Int]](repeating: [Int](repeating: 0, count: bArray.count+1), count: aArray.count+1)
+    
+    for j in 1..<bArray.count+1 {
+        for i in 1..<aArray.count+1 {
+            if aArray[i-1] == bArray[j-1] {
+                lcs[i][j] = 1 + lcs[i-1][j-1]
+            } else {
+                lcs[i][j] = max(lcs[i-1][j], lcs[i][j-1])
+            }
+            print("lcs[\(i)\(j)] = \(lcs[i][j])")
+        }
+    }
+    return lcs
+}
+
+func backtrackLCS(A: String, B: String, lcs: [[Int]]) -> [Character] {
+    let aArray = Array(A)
+    let bArray = Array(B)
+    
+    var longest = lcs[aArray.count][bArray.count]
+    var sequence: [Character] = [Character](repeating: " ", count: longest)
+    var i = aArray.count, j = bArray.count
+    
+    while i > 0 && j > 0 {
+        
+        // If current character in A[] and B are same, then current character is part of LCS
+        if aArray[i-1] == bArray[j-1] {
+            
+            // Put current character in result
+            sequence[longest-1] = aArray[i-1] //or bArray[j-1] both are same
+            i -= 1
+            j -= 1
+            longest -= 1
+        }
+        // If not same, then find the max of previous row, previous column
+        else if lcs[i-1][j] > lcs[i][j-1] { // max condition as in above lcs dp solution
+            i -= 1
+        } else {
+            j -= 1
+        }
+    }
+    return sequence
+}
+
 
 var memo = [Int : Int]()
 
@@ -1443,12 +1526,29 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+       // let val = buySellStocksI(prices: [3,3,5,0,0,3,1,4])
+
+        let cv = CourseController()
+        let c = cv.view
+        
+        let ps = PracticeSession()
+        
+               
+        let data = ps.mergeSort(array: [2, 1, 5, 4, 9])
+        print(data)
+        //let lis = LongestIncreasingSubsequence(nums: [10,9,2,5,3,7,101,18])
+        //let lcs = LCSRecursion(string1: "bd", string2: "abcd")
+        
+        let lcs = LCSDynamicProgramming(A: "longest", B: "stone")
+        let lcsString = backtrackLCS(A: "longest", B: "stone", lcs: lcs)
+        print(lcsString)
+        
         let knp = knapsack(weights: [1,2,3], values: [6,10,12], capacity: 5)
         print(knp)
         
-        knapsack(weights: [1,2,3], values: [6,10,12], totalWeight: 5)
+        //knapsack(weights: [1,2,3], values: [6,10,12], totalWeight: 5)
         
-        let and = coinChangeWaysDP(money: 12, coins: [1,2,5])
+        //let and = coinChangeWaysDP(money: 12, coins: [1,2,5])
 
         //let ans = minCoinsChangeRecursive(coins: [25, 5, 1], money: 25)
         maxSumSubarray(from: [-2,3,-4])
