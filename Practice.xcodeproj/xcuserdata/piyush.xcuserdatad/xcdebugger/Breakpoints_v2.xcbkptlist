@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Practice/ViewController.swift"
-            timestampString = "553673902.553988"
+            timestampString = "554187710.633271"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1536"
-            endingLineNumber = "1536"
+            startingLineNumber = "1566"
+            endingLineNumber = "1566"
             landmarkName = "jumps(nums:)"
             landmarkType = "9">
          </BreakpointContent>
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Practice/ViewController.swift"
-            timestampString = "553673902.554341"
+            timestampString = "554187710.6337"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "139"
-            endingLineNumber = "139"
+            startingLineNumber = "142"
+            endingLineNumber = "142"
             landmarkName = "delete(data:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Practice/ViewController.swift"
-            timestampString = "553673902.554563"
+            timestampString = "554187710.6340311"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1668"
-            endingLineNumber = "1668"
+            startingLineNumber = "1623"
+            endingLineNumber = "1623"
             landmarkName = "viewDidLoad()"
             landmarkType = "7">
          </BreakpointContent>

@@ -8,6 +8,19 @@
 
 import UIKit
 
+func sqroot(n: Double) -> Int {
+    var squareRoot = n/2
+    var guess = 0.0
+    
+    while squareRoot != guess {
+        guess = squareRoot
+        squareRoot = (guess + (n/guess))/2
+        
+    }
+    print(squareRoot)
+    return Int(squareRoot)
+}
+
 //MARK: Linklist
 class Node<T: Equatable> {
     var data: T? = nil
@@ -28,6 +41,9 @@ class Node<T: Equatable> {
 class LinkList<T: Equatable> {
     
     var head = Node<T>()
+    var front: Node? = Node<T>()
+    var rear: Node? = Node<T>()
+    
     func insertAtBegining(data: T) {
         if head.data == nil {
             head.data = data
@@ -43,7 +59,7 @@ class LinkList<T: Equatable> {
     func insertAtEnd(node: Node<T>) {
         if head.data == nil {
             head.data = node.data
-        }  else {
+        } else {
             var temp = head
             
             while temp.next != nil {
@@ -173,64 +189,6 @@ class LinkList<T: Equatable> {
         p.next = nil
     }
     
-    
-    func removeLoopFromLinkList(startNode: Node<T>) {
-        var previousPtr: Node<T>?
-        var fastPtr = startNode
-        var slowPtr = startNode
-        
-        //If fastPtr encounters NULL, it means there is no Loop in Linked list.
-        while fastPtr.next != nil && fastPtr.next?.next != nil {
-            previousPtr = fastPtr.next!
-            fastPtr = fastPtr.next!.next!
-            slowPtr = slowPtr.next!
-            
-            if slowPtr === fastPtr {
-                slowPtr = startNode
-                
-                //If loop start node is starting at the root Node, then slowPtr, fastPtr and head all point to the same location.
-                //we already capture previous node, just setting it to null will work in this case.
-                if slowPtr === fastPtr {
-                    previousPtr?.setLink(node: Node())
-                } else {
-                    //We need to first identify the start of loop node and then by setting just previous node of loop node next to null.  
-                    while slowPtr.next! !== fastPtr.next! {
-                        slowPtr = slowPtr.next!
-                        fastPtr = fastPtr.next!
-                    }
-                    fastPtr.setLink(node: Node())
-                }
-            }
-        }
-        print(startNode.data!)
-    }
-    
-    func getLoopNode(startNode: Node<T>) {
-        var fastPtr = startNode
-        var slowPtr = startNode
-        
-        //If fastPtr encounters NULL, it means there is no Loop in Linked list.
-        while fastPtr.next != nil {
-            fastPtr = fastPtr.next!.next!
-            slowPtr = slowPtr.next!
-            
-            // if slowPtr and fastPtr meets, it means linked list contains loop.
-            if slowPtr === fastPtr {
-                //After meet, moving slowPtr to start node of list.
-                slowPtr = startNode
-                //Moving slowPtr and fastPtr one node at a time till the time they meet at common point.
-                while !(slowPtr === fastPtr) {
-                    fastPtr = fastPtr.next!
-                    slowPtr = slowPtr.next!
-                }
-                print("Loop start at node: \(slowPtr.data!)")
-                return
-            }
-        }
-        
-        print("No Loop")
-    }
-    
     var isCircular: Bool {
         var slowPtr = head
         var fastPtr = head
@@ -245,6 +203,91 @@ class LinkList<T: Equatable> {
         return false
     }
     
+    func getLoopNode(startNode: Node<T>) {
+        var fastPtr = startNode
+        var slowPtr = startNode
+        
+        //If fastPtr encounters nil, it means there is no Loop in Linked list.
+        while fastPtr.next != nil {
+            fastPtr = fastPtr.next!.next!
+            slowPtr = slowPtr.next!
+            
+            // if slowPtr and fastPtr meets, it means linked list contains loop.
+            if slowPtr === fastPtr {
+                //After meet, moving slowPtr to start node of list.
+                slowPtr = head
+                //Moving slowPtr and fastPtr one node at a time till the time they meet at common point.
+                while !(slowPtr === fastPtr) {
+                    fastPtr = fastPtr.next!
+                    slowPtr = slowPtr.next!
+                }
+                print("Loop start at node: \(slowPtr.data!)")
+                return
+            }
+        }
+        
+        print("No Loop")
+    }
+    
+    func enqueue(node: Node<T>) {
+        if front?.data == nil && rear?.data == nil {
+            front = node
+            rear = node
+            head = front!
+            return
+        }
+        
+        rear?.next = node
+        rear = node
+    }
+    
+    func dequeue() {
+        if front?.next == nil {
+            front = Node<T>()
+            head = front!
+            return
+        }
+        
+        if front === rear {
+            front = Node<T>()
+            rear = Node<T>()
+        } else {
+            front = front?.next
+        }
+        head = front!
+    }
+    
+    func removeLoopFromLinkList(startNode: Node<T>) {
+        var previousPtr: Node<T>?
+        var fastPtr = startNode
+        var slowPtr = startNode
+        
+        //If fastPtr encounters nil, it means there is no Loop in Linked list.
+        while fastPtr.next != nil && fastPtr.next?.next != nil {
+            previousPtr = fastPtr.next!
+            fastPtr = fastPtr.next!.next!
+            slowPtr = slowPtr.next!
+            
+            if slowPtr === fastPtr {
+                slowPtr = head
+                
+                //If loop start node is starting at the root Node, then slowPtr, fastPtr and head all point to the same location.
+                //we already capture previous node, just setting it to nill will work in this case.
+                if slowPtr === fastPtr {
+                    previousPtr?.setLink(node: Node())
+                } else {
+                    //We need to first identify the start of loop node and then by setting
+                    //fast node to nil we can break the cycle
+                    while slowPtr.next! !== fastPtr.next! {
+                        slowPtr = slowPtr.next!
+                        fastPtr = fastPtr.next!
+                    }
+                    fastPtr.setLink(node: Node())
+                }
+            }
+        }
+        print(startNode.data!)
+    }
     
     func addTwoNumbers(l1: Node<Int>?, l2: Node<Int>?) -> Node<Int> {
         let dummyNode = Node<Int>(data: 0)
@@ -1170,7 +1213,7 @@ func findPeakElement(array: [Int]) -> Int {
             lb = mid
         }
             
-            //if mid element is smaller than its previuos neighbour then peak element will be in left side
+        //if mid element is smaller than its previuos neighbour then peak element will be in left side
         else if array[mid] < array[mid-1] {
             ub = mid
         } else {
@@ -1518,227 +1561,283 @@ func backtrackLCS(A: String, B: String, lcs: [[Int]]) -> [Character] {
     return sequence
 }
 
-
 var memo = [Int : Int]()
+
+func jumps(nums: [Int]) -> Int{
+    
+    //if ladder has no stairs then we cant jump at all
+    if nums.count <= 1 {
+        return 0
+    }
+    
+    var ladder = nums[0] //keep track of largest ladder you have
+    var stairs = nums[0] //keep track of current ladder stairs count
+    var jump = 1
+    
+    for level in 1..<nums.count {
+        
+        //base case
+        if level == nums.count-1 {
+            if ladder == nums.count-1 {
+                print("can reach at the last of ladder")
+            } else {
+                print("can't reach at the last of ladder")
+            }
+            return jump
+        }
+
+        //build new ladder if find beter one than current one
+        if level + nums[level] > ladder {
+            ladder = level + nums[level]
+        }
+        
+        //keep track of stairs, once used update remaining stairs
+        stairs -= 1
+        
+        //once stairs are finished in current ladder, jump to another ladder
+        if stairs == 0 {
+            jump += 1
+            //assign new stairs for current ladder
+            stairs = ladder-level
+        }
+    }
+    
+    return jump
+}
 
 class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-       // let val = buySellStocksI(prices: [3,3,5,0,0,3,1,4])
+        
+        let list4 = LinkList<Int>()
+        list4.enqueue(node: Node<Int>(data: 6))
+        list4.enqueue(node: Node<Int>(data: 5))
+        list4.enqueue(node: Node<Int>(data: 4))
+        //list4.showList()
+        
+        list4.dequeue()
+        list4.showList()
 
-        let cv = CourseController()
-        let c = cv.view
-        
-        let ps = PracticeSession()
-        
-               
-        let data = ps.mergeSort(array: [2, 1, 5, 4, 9])
-        print(data)
-        //let lis = LongestIncreasingSubsequence(nums: [10,9,2,5,3,7,101,18])
-        //let lcs = LCSRecursion(string1: "bd", string2: "abcd")
-        
-        let lcs = LCSDynamicProgramming(A: "longest", B: "stone")
-        let lcsString = backtrackLCS(A: "longest", B: "stone", lcs: lcs)
-        print(lcsString)
-        
-        let knp = knapsack(weights: [1,2,3], values: [6,10,12], capacity: 5)
-        print(knp)
-        
-        //knapsack(weights: [1,2,3], values: [6,10,12], totalWeight: 5)
-        
-        //let and = coinChangeWaysDP(money: 12, coins: [1,2,5])
 
-        //let ans = minCoinsChangeRecursive(coins: [25, 5, 1], money: 25)
-        maxSumSubarray(from: [-2,3,-4])
-        //let intervalArray = [[1,3],[2,6],[8,10],[15,18]]
-        let intervalArray = [[1,4], [0,4]]
-        let intervalsMapped = intervalArray.map { Interval($0.first!, $0.last!)}
-        let overlapped = mergeOverlap(intervals: intervalsMapped)
-        print(overlapped)
         
-        let peakelement = findPeakElement(array: [1,2,3,1])
-        print("peak eleement:\(peakelement)")
-        
-        var ds = DataStructure()
-        ds.add(element: 7)
-        ds.add(element: 9)
-        ds.add(element: 8)
-        ds.add(element: 6)
-        ds.add(element: 5)
-        
-        
-        print(ds.list)
-        
-        //ds.remove(element: 9)
-        //ds.remove(element: 7)
-        print(ds.list)
-        print(ds.random)
-        print(ds.random)
-        
-        
-        let treeArray: [Int?] = [10, 20, 30, 40, 50]
-        let root = convertArrayToBST(start: 0, end: treeArray.count - 1, nums: treeArray)
-        //preorderTraverse(root: root!)
-        //inorderTraverse(root: root!)
-        
-        postorderTraverse(root: root!)
-        
-        let kthSmallest = kthSmallestElementinBST(k: 1, root: root)
-        let kthlargest = kthLargestElementinBST(k: 2, root: root)
-        
-        
-        var dups = [1,4,2,3,1]
-        findDuplicate(array: &dups)
-        
-        var str = "ABC"
-        permutation(of: &str, start: 0, end: 2)
-        
-        
-        productSelf(array: [1, 2, 3, 4])
-        
-        let arr = ["geeksforgeeks", "geeks",
-                   "geek", "geezer"]
-        let lcp = longestCommonPrefix(strs: arr)
-        print(lcp)
-        
-        
-        let n1 = Node(data: 10)
-        let n2 = Node(data: 20)
-        let n3 = Node(data: 30)
-        let n4 = Node(data: 40)
-        let n5 = Node(data: 50)
-        let n6 = Node(data: 60)
-        let n7 = Node(data: 70)
-        let n8 = Node(data: 80)
-        
-        let loopList = LinkList<Int>()
-        loopList.insertAtEnd(node: n1)
-        loopList.insertAtEnd(node: n2)
-        loopList.insertAtEnd(node: n3)
-        loopList.insertAtEnd(node: n4)
-        loopList.insertAtEnd(node: n5)
-        loopList.insertAtEnd(node: n6)
-        loopList.insertAtEnd(node: n7)
-        loopList.insertAtEnd(node:n8)
-        
-        //to test loop in a linklist
-        n8.setLink(node: n6)
-        
-        loopList.getLoopNode(startNode: loopList.head)
-        //loopList.showList()
-        print(loopList.isCircular) // true
-        loopList.removeLoopFromLinkList(startNode: loopList.head)
-        print(loopList.isCircular) //false
-        
-        let node1  = Node<Int>()
-        node1.data = 5
-        
-        //let node2  = Node<Int>()
-        //node2.data = 2
-        //let node3  = Node<Int>()
-        //node3.data = 3
-        
-        let list1 = LinkList<Int>()
-        list1.insertAtEnd(node: node1)
-        //list1.insertAtEnd(node: node2)
-        //list1.insertAtEnd(node: node3)
-        //list1.showList()
-        
-        let node4  = Node<Int>()
-        node4.data = 5
-        
-        //let node5  = Node<Int>()
-        //node5.data = 5
-        //let node6  = Node<Int>()
-        //node6.data = 6
-        
-        let list2 = LinkList<Int>()
-        list2.insertAtEnd(node: node4)
-        //list2.insertAtEnd(node: node5)
-        //list2.insertAtEnd(node: node6)
-        //list2.showList()
-        
-        let node = list1.addTwoNumbers(l1: list1.head, l2: list2.head)
-        let list3 = LinkList<Int>()
-        list3.head = node
-        //list3.showList()
-        
-        //list.reverse()
-        //list.reverseRecursive(p: list.head)
-        //list.showList()
-        //let arr1 = [1,4,6,8]
-        //let arr2 = [9,3,5,7]
-        
-        //let str = reverseEveryOtherWord(sentence: "Apple Google Airbnb Uber")
-        //print(str)
-        
-        //3 rows 5 columns
-        //convertRowsToColumns(array: [ [13,4,8,14,1], [9,6,3,7,21], [5,12,17,9,3] ])
-        //5 rows 3 columns
-        //[ [13,9,5], [4,6,12], [8,3,17], [14,7,9], [1,21,3] ]
-        
-        //let arr = shuffle(array:  [1,2,3,4,5])
-        //print(arr)
-        //let pairs = [2, 5, 11, 7, 15, 4, 5]
-        //let pair = twoSum(list: pairs, target: 9)
-        //print(pair)
-        //        let arr = merge(array1: [9,4,5], array2: [3,2,8])
-        //        print(arr)
-        //        let result = findLongestSubstring(from: "aababca")
-        //        print(result.1, result.0)
-        //
-        //        let lps = longestPalinfromicSubstring(s: "cbbd")
-        //        print(lps)
-        
-        //        let root = TreeNode(val: 1)
-        //        root.left = TreeNode(val: 2)
-        //        root.right = TreeNode(val: 3)
-        //        root.left?.left = TreeNode(val: 4)
-        //        root.right?.right = TreeNode(val: 5)
-        //print(MaxDepthOfBimaryTree().maxDepth(root))
-        //        var arr = [0, 1, 0, 3, 12]
-        //        moveZeros(&arr)
-        //        print(arr)/////////////////////////////////////'''''''''''''''''''''
-        
-        let stockPrices = [7,1,5,3,6,4]
-        let stockDetails = buySellStocksII(prices: stockPrices)
-        print(stockDetails.0, stockDetails.1)
-        //let stockDetails = buySellStocksII(prices: stockPrices)
-        //print("Buying stocks at day: \(stockDetails.1.0) and selling at day: \(stockDetails.1.1), you will get profit of: \(stockDetails.0)")
-        
-        let element = majorityElementII(in: [3, 3, 4, 2, 4, 4, 2, 4, 4])
-        print(element)
-        
-        let index = uniqueCharacter(in: "geeksforgeeks")
-        print(index)
-        
-        let r = flatten(s: [1,2, [3,4, [5,6, [7,8]]]])
-        let s = flatten(s: ["a","b", ["c","d", ["e","f", ["g","h"]]]])
-        print(r,s)
-        
-        //let treeArray = [1,3,5,7,9]
-        //let root = convertArrayToBST(nums: treeArray)
-        //inorderTraverse(root: root!)
-        
-        let resu = topKFrequentElements([1,2,1,2,3,4], 2)
-        print(resu)
-        
-        //Mirror sub trees
-        let mirrorRoot = TreeNode(val: 1)
-        mirrorRoot.left = TreeNode(val: 2)
-        mirrorRoot.right = TreeNode(val: 2)
-        mirrorRoot.left?.left = TreeNode(val: 3)
-        mirrorRoot.left?.right = TreeNode(val: 4)
-        mirrorRoot.right?.left = TreeNode(val: 4)
-        mirrorRoot.right?.right = TreeNode(val: 3)
-        let istrue = isMirror(root: mirrorRoot)
-        print(istrue)
-        
-        var duplicates = [0,0,1,1,1,2,2,3,3,4]
-        let length = removeDuplicates(array: &duplicates)
-        print(length)
+//        let d = sqrt(2)
+//        jumps(nums: [2,3,1,1,4])
+//
+//       // let val = buySellStocksI(prices: [3,3,5,0,0,3,1,4])
+//
+//        let ps = PracticeSession()
+//
+//        let data = ps.mergeSort(array: [2, 1, 5, 4, 9])
+//        print(data)
+//        //let lis = LongestIncreasingSubsequence(nums: [10,9,2,5,3,7,101,18])
+//        //let lcs = LCSRecursion(string1: "bd", string2: "abcd")
+//
+//        let lcs = LCSDynamicProgramming(A: "longest", B: "stone")
+//        let lcsString = backtrackLCS(A: "longest", B: "stone", lcs: lcs)
+//        print(lcsString)
+//
+//        let knp = knapsack(weights: [1,2,3], values: [6,10,12], capacity: 5)
+//        print(knp)
+//
+//        //knapsack(weights: [1,2,3], values: [6,10,12], totalWeight: 5)
+//
+//        //let and = coinChangeWaysDP(money: 12, coins: [1,2,5])
+//
+//        //let ans = minCoinsChangeRecursive(coins: [25, 5, 1], money: 25)
+//        maxSumSubarray(from: [-2,3,-4])
+//        //let intervalArray = [[1,3],[2,6],[8,10],[15,18]]
+//        let intervalArray = [[1,4], [0,4]]
+//        let intervalsMapped = intervalArray.map { Interval($0.first!, $0.last!)}
+//        let overlapped = mergeOverlap(intervals: intervalsMapped)
+//        print(overlapped)
+//
+//        let peakelement = findPeakElement(array: [1,2,3,1])
+//        print("peak eleement:\(peakelement)")
+//
+//        var ds = DataStructure()
+//        ds.add(element: 7)
+//        ds.add(element: 9)
+//        ds.add(element: 8)
+//        ds.add(element: 6)
+//        ds.add(element: 5)
+//
+//
+//        print(ds.list)
+//
+//        //ds.remove(element: 9)
+//        //ds.remove(element: 7)
+//        print(ds.list)
+//        print(ds.random)
+//        print(ds.random)
+//
+//
+//        let treeArray: [Int?] = [10, 20, 30, 40, 50]
+//        let root = convertArrayToBST(start: 0, end: treeArray.count - 1, nums: treeArray)
+//        //preorderTraverse(root: root!)
+//        //inorderTraverse(root: root!)
+//
+//        postorderTraverse(root: root!)
+//
+//        let kthSmallest = kthSmallestElementinBST(k: 1, root: root)
+//        let kthlargest = kthLargestElementinBST(k: 2, root: root)
+//
+//
+//        var dups = [1,4,2,3,1]
+//        findDuplicate(array: &dups)
+//
+//        var str = "ABC"
+//        permutation(of: &str, start: 0, end: 2)
+//
+//
+//        productSelf(array: [1, 2, 3, 4])
+//
+//        let arr = ["geeksforgeeks", "geeks",
+//                   "geek", "geezer"]
+//        let lcp = longestCommonPrefix(strs: arr)
+//        print(lcp)
+//
+//
+//        let n1 = Node(data: 1)
+//        let n2 = Node(data: 20)
+//        let n3 = Node(data: 5)
+//        let n4 = Node(data: 18)
+//        let n5 = Node(data: 22)
+//        //let n6 = Node(data: 5)
+////        let n7 = Node(data: 70)
+////        let n8 = Node(data: 80)
+//
+//        let loopList = LinkList<Int>()
+//        loopList.insertAtEnd(node: n1)
+//        loopList.insertAtEnd(node: n2)
+//        loopList.insertAtEnd(node: n3)
+//        loopList.insertAtEnd(node: n4)
+//        loopList.insertAtEnd(node: n5)
+////        loopList.insertAtEnd(node: n6)
+////        loopList.insertAtEnd(node: n7)
+////        loopList.insertAtEnd(node:n8)
+//
+//        //to test loop in a linklist
+//        n5.setLink(node: n3)
+//
+//        loopList.getLoopNode(startNode: loopList.head)
+//        //loopList.showList()
+//        print(loopList.isCircular) // true
+//        loopList.removeLoopFromLinkList(startNode: loopList.head)
+//        print(loopList.isCircular) //false
+//
+//        let node2  = Node<Int>()
+//        node2.data = 2
+//
+//        let node4  = Node<Int>()
+//        node4.data = 4
+//
+//        let node3  = Node<Int>()
+//        node3.data = 3
+//
+//        let node6  = Node<Int>()
+//        node6.data = 6
+//
+//        let list1 = LinkList<Int>()
+//        list1.insertAtEnd(node: node2)
+//        list1.insertAtEnd(node: node4)
+//        list1.insertAtEnd(node: node3)
+//        list1.insertAtEnd(node: node6)
+//
+//        //list1.showList()
+//
+//        //let node5  = Node<Int>()
+//        //node5.data = 5
+//        //let node6  = Node<Int>()
+//        //node6.data = 6
+//
+//        let list2 = LinkList<Int>()
+//        list2.insertAtEnd(node: node4)
+//        //list2.insertAtEnd(node: node5)
+//        //list2.insertAtEnd(node: node6)
+//        //list2.showList()
+//
+//
+//        let node = list1.addTwoNumbers(l1: list1.head, l2: list2.head)
+//        let list3 = LinkList<Int>()
+//        list3.head = node
+//        //list3.showList()
+//        
+//        list1.reverse()
+//        //list.reverseRecursive(p: list.head)
+//        //list.showList()
+//        //let arr1 = [1,4,6,8]
+//        //let arr2 = [9,3,5,7]
+//
+//        //let str = reverseEveryOtherWord(sentence: "Apple Google Airbnb Uber")
+//        //print(str)
+//
+//        //3 rows 5 columns
+//        //convertRowsToColumns(array: [ [13,4,8,14,1], [9,6,3,7,21], [5,12,17,9,3] ])
+//        //5 rows 3 columns
+//        //[ [13,9,5], [4,6,12], [8,3,17], [14,7,9], [1,21,3] ]
+//
+//        //let arr = shuffle(array:  [1,2,3,4,5])
+//        //print(arr)
+//        //let pairs = [2, 5, 11, 7, 15, 4, 5]
+//        //let pair = twoSum(list: pairs, target: 9)
+//        //print(pair)
+//        //        let arr = merge(array1: [9,4,5], array2: [3,2,8])
+//        //        print(arr)
+//        //        let result = findLongestSubstring(from: "aababca")
+//        //        print(result.1, result.0)
+//        //
+//        //        let lps = longestPalinfromicSubstring(s: "cbbd")
+//        //        print(lps)
+//
+//        //        let root = TreeNode(val: 1)
+//        //        root.left = TreeNode(val: 2)
+//        //        root.right = TreeNode(val: 3)
+//        //        root.left?.left = TreeNode(val: 4)
+//        //        root.right?.right = TreeNode(val: 5)
+//        //print(MaxDepthOfBimaryTree().maxDepth(root))
+//        //        var arr = [0, 1, 0, 3, 12]
+//        //        moveZeros(&arr)
+//        //        print(arr)/////////////////////////////////////'''''''''''''''''''''
+//
+//        let stockPrices = [7,1,5,3,6,4]
+//        let stockDetails = buySellStocksII(prices: stockPrices)
+//        print(stockDetails.0, stockDetails.1)
+//        //let stockDetails = buySellStocksII(prices: stockPrices)
+//        //print("Buying stocks at day: \(stockDetails.1.0) and selling at day: \(stockDetails.1.1), you will get profit of: \(stockDetails.0)")
+//
+//        let element = majorityElementII(in: [3, 3, 4, 2, 4, 4, 2, 4, 4])
+//        print(element)
+//
+//        let index = uniqueCharacter(in: "geeksforgeeks")
+//        print(index)
+//
+//        let r = flatten(s: [1,2, [3,4, [5,6, [7,8]]]])
+//        let s = flatten(s: ["a","b", ["c","d", ["e","f", ["g","h"]]]])
+//        print(r,s)
+//
+//        //let treeArray = [1,3,5,7,9]
+//        //let root = convertArrayToBST(nums: treeArray)
+//        //inorderTraverse(root: root!)
+//
+//        let resu = topKFrequentElements([1,2,1,2,3,4], 2)
+//        print(resu)
+//
+//        //Mirror sub trees
+//        let mirrorRoot = TreeNode(val: 1)
+//        mirrorRoot.left = TreeNode(val: 2)
+//        mirrorRoot.right = TreeNode(val: 2)
+//        mirrorRoot.left?.left = TreeNode(val: 3)
+//        mirrorRoot.left?.right = TreeNode(val: 4)
+//        mirrorRoot.right?.left = TreeNode(val: 4)
+//        mirrorRoot.right?.right = TreeNode(val: 3)
+//        let istrue = isMirror(root: mirrorRoot)
+//        print(istrue)
+//
+//        var duplicates = [0,0,1,1,1,2,2,3,3,4]
+//        let length = removeDuplicates(array: &duplicates)
+//        print(length)
         
     }
 }

@@ -8,6 +8,7 @@
 import Foundation
 import  UIKit
 
+
 // MARK: SEARCH
 
 class PracticeSession {
@@ -131,6 +132,7 @@ class PracticeSession {
             return lowerBound
         }
         return rightBoundary() - leftBoundary()
+        
     }
 }
 
