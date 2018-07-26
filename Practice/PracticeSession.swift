@@ -8,6 +8,66 @@
 import Foundation
 import  UIKit
 
+struct StackQueue {
+    var top = 0
+    var array = [Int]()
+    
+    mutating func push(item: Int) {
+        if top == array.count-1 {
+            return
+        }
+        array.append(item)
+        top += 1
+    }
+    
+    mutating func pop() -> Int {
+        if isEmpty {
+            return -1
+        }
+        let topItem = array[top-1]
+        array.remove(at: top-1)
+        top -= 1
+        return topItem
+    }
+    
+    var isEmpty: Bool {
+        return top == 0
+    }
+    
+    var first: Int {
+        return array[top-1]
+    }
+    
+    mutating func printStack() {
+        for i in 0..<top {
+            print(array[i])
+        }
+    }
+}
+var stack = StackQueue()
+
+struct Queue {
+    
+    func enqueue(item: Int) {
+        stack.push(item: item)
+    }
+    
+    func dequeue() -> Int {
+        
+        if stack.isEmpty {
+            return -1
+        }
+        
+        if stack.top == 1 {
+            return stack.pop()
+        }
+        
+        let popped = stack.pop()
+        let item = dequeue()
+        stack.push(item: popped)
+        return item
+    }
+}
 
 // MARK: SEARCH
 

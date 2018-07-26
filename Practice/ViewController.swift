@@ -828,7 +828,7 @@ func inorderTraverse(root: TreeNode?) {
             current = current?.left
         } else {
             let node = stack.popLast()
-            print(node!.value)
+            //print(node!.value)
             current = node?.right
         }
     }
@@ -841,16 +841,14 @@ func inorderTraverse(root: TreeNode?) {
 func postorderTraverse(root: TreeNode?) {
     var stack = [TreeNode]()
     stack.append(root!)
-    
     var peeked = [TreeNode?]()
     
     while !stack.isEmpty {
-        
         let temp = stack.last//peek
         
         if (temp!.left == nil && temp?.right == nil) || peeked.contains(where : { $0 === temp}) {
             let node = stack.popLast()
-            print(node!.value)
+            //print(node!.value)
         } else {
             if temp?.right != nil {
                 stack.append(temp!.right!)
@@ -1610,7 +1608,17 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let queue = Queue()
+        queue.enqueue(item: 10)
+        queue.enqueue(item: 20)
+        queue.enqueue(item: 30)
+        queue.enqueue(item: 40)
+        queue.enqueue(item: 50)
         
+        
+        let item1 = queue.dequeue()
+        let item2 = queue.dequeue()
+
         let list4 = LinkList<Int>()
         list4.enqueue(node: Node<Int>(data: 6))
         list4.enqueue(node: Node<Int>(data: 5))
